@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    id("com.google.gms.google-services") version "4.4.2" apply false
 }
 
 kotlin {
@@ -27,8 +28,8 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
-        }
+            implementation("dev.gitlive:firebase-auth:2.1.0")
+            implementation("dev.gitlive:firebase-common:2.1.0")        }
     }
 }
 
@@ -41,5 +42,11 @@ android {
     }
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+
+
+    dependencies {
+        implementation(platform(libs.firebase.bom))
+        implementation(libs.firebase.auth.ktx)
     }
 }
