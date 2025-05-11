@@ -22,6 +22,9 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.firebase.auth.v140)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.json.v150)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -34,6 +37,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(projects.shared)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
     }
 }
