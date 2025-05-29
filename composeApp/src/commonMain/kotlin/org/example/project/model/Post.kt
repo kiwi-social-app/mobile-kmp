@@ -14,5 +14,8 @@ data class Post(
     @Contextual
     val updatedAt: Instant?,
     val published: Boolean,
-    val authorId: String
+    val author: UserBasic,
+    val favoritedBy: List<String>,
+    val likedByUsers: List<String>,
+    val dislikedByUsers: List<String>,
     )
