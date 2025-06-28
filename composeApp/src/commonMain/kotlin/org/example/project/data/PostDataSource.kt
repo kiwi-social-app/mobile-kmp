@@ -15,7 +15,7 @@ class PostDataSource {
         }
     }
 
-    private val postsUrl = "http://10.0.2.2:8080/posts/"
+    private val postsUrl = "http://10.0.2.2:8080/api/posts"
 
     suspend fun fetchPosts(): List<Post> {
         return client.get(postsUrl).body()

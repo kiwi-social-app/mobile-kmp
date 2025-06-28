@@ -1,4 +1,4 @@
-rootProject.name = "kiwi-social-mobile"
+rootProject.name = "kiwi_social"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
