@@ -6,9 +6,12 @@ android-targetSdk = "36"
 androidx-activityCompose = "1.11.0"
 androidx-lifecycle = "2.9.5"
 androidx-material-icons = "1.7.8"
+firebase-bom = "34.4.0"
 compose-multiplatform = "1.9.1"
 
 firebase-kmp = "2.3.0"
+
+google-services = "4.4.4"
 
 kotlin = "2.2.20"
 kotlinSerialization = "2.2.20"
@@ -31,7 +34,9 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 
 firebase-app = { module = "dev.gitlive:firebase-app", version.ref = "firebase-kmp" }
 firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebase-kmp" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-common = { module = "dev.gitlive:firebase-common", version.ref = "firebase-kmp" }
+
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
@@ -47,5 +52,6 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+googleServices = {id ="com.google.gms.google-services", version.ref = "google-services"}
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }

@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    id("com.google.gms.google-services") version "4.4.4" apply false
 }
 
 kotlin {
@@ -22,9 +21,10 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
+            freeCompilerArgs += "-Xbinary=bundleId=org.example.project.shared"
         }
     }
-    
+
     sourceSets {
         commonMain.dependencies {
             api(libs.firebase.app)
@@ -43,5 +43,10 @@ android {
     }
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+    publishing {
+        multipleVariants {
+            allVariants()
+        }
     }
 }
