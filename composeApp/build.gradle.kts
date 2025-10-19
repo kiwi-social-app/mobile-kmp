@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    id("com.google.gms.google-services") version "4.4.2"
+    id("com.google.gms.google-services") version "4.4.4"
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -15,16 +15,28 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
+    iosArm64("iosArm64") {
+        binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
+    iosSimulatorArm64("iosSimulatorArm64") {
+        binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
     
     sourceSets {
         
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.firebase.auth.v140)
+            implementation(libs.androidx.material3)
+            implementation(libs.androidx.material.icons.extended)
+            implementation(libs.androidx.navigation.compose.android)
             implementation(libs.ktor.client.okhttp)
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.kotlinx.serialization.json.v150)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -33,13 +45,19 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(projects.shared)
+
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+
+            implementation(libs.kotlinx.datetime)
+
+            implementation(projects.shared)
         }
     }
 }
@@ -70,11 +88,3 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
-
-dependencies {
-    implementation(libs.firebase.common.ktx)
-    implementation(libs.androidx.navigation.compose.android)
-    implementation(libs.androidx.material3)
-    debugImplementation(compose.uiTooling)
-}
-

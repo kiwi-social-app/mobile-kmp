@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    id("com.google.gms.google-services") version "4.4.2" apply false
+    id("com.google.gms.google-services") version "4.4.4" apply false
 }
 
 kotlin {
@@ -16,7 +16,6 @@ kotlin {
     }
     
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -28,8 +27,10 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.gitlive:firebase-auth:2.1.0")
-            implementation("dev.gitlive:firebase-common:2.1.0")        }
+            api(libs.firebase.app)
+            api(libs.firebase.auth)
+            api(libs.firebase.common)
+        }
     }
 }
 
@@ -42,11 +43,5 @@ android {
     }
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-
-
-    dependencies {
-        implementation(platform(libs.firebase.bom))
-        implementation(libs.firebase.auth.ktx)
     }
 }

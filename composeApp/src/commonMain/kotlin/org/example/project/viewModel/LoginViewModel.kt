@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.FirebaseAuth
+import dev.gitlive.firebase.auth.auth
+
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class LoginViewModel : ViewModel(){
 
@@ -41,7 +41,7 @@ class LoginViewModel : ViewModel(){
 
         viewModelScope.launch {
             try {
-                val result = auth.signInWithEmailAndPassword(email, password).await()
+                val result = auth.signInWithEmailAndPassword(email, password)
                 if (result.user != null) {
                     onSuccess()
                 } else {

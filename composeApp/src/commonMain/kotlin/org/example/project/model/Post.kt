@@ -1,6 +1,7 @@
+@file:OptIn(kotlin.time.ExperimentalTime::class)
 package org.example.project.model
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -19,3 +20,8 @@ data class Post(
     val likedByUsers: List<String>,
     val dislikedByUsers: List<String>,
     )
+
+@Serializable
+data class CreatePost(
+    val body: String,
+)
