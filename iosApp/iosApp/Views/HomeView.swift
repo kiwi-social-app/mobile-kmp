@@ -8,17 +8,21 @@ struct HomeView: View {
     var body: some View {
         Observing(viewModel.posts) { posts in
             NavigationStack {
-                ZStack {
+                Group{
                     if posts.isEmpty {
                         ProgressView("Loading posts...")
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
                         List(posts, id: \.id) { post in
                             PostItemView(post: post)
-                                .listRowSeparator(Visibility.hidden)
+                                .listRowSeparator(.hidden)
                                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                                 .listRowBackground(Color.clear)
                         }
                         .listStyle(.plain)
+                        .refreshable {
+                            viewModel.fetchPosts()
+                        }
                     }
                 }
                 .navigationTitle("Kiwi Social")
