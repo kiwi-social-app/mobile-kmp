@@ -22,14 +22,14 @@ kotlin {
         binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            freeCompilerArgs += "-Xbinary=bundleId=org.example.project.composeapp"
+            freeCompilerArgs += "-Xbinary=bundleId=com.kiwisocial.composeapp"
         }
     }
     iosSimulatorArm64("iosSimulatorArm64") {
         binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            freeCompilerArgs += "-Xbinary=bundleId=org.example.project.composeapp"
+            freeCompilerArgs += "-Xbinary=bundleId=com.kiwisocial.composeapp"
         }
     }
 
@@ -41,7 +41,6 @@ kotlin {
             implementation(libs.androidx.material3)
             implementation(libs.androidx.material.icons.extended)
             implementation(libs.androidx.navigation.compose.android)
-            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -54,25 +53,17 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.auth)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-
-            implementation(libs.kotlinx.datetime)
-
             implementation(projects.shared)
         }
     }
 }
 
 android {
-    namespace = "org.example.project"
+    namespace = "com.kiwisocial.app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.example.project"
+        applicationId = "com.kiwisocial.app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

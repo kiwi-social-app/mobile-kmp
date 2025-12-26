@@ -1,24 +1,25 @@
 [versions]
-agp = "8.13.1"
+agp = "8.13.2"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
-androidx-activityCompose = "1.12.0"
+androidx-activityCompose = "1.12.2"
 androidx-lifecycle = "2.9.6"
 androidx-material-icons = "1.7.8"
-firebase-bom = "34.6.0"
+firebase-bom = "34.7.0"
 compose-multiplatform = "1.9.3"
 
 firebase-kmp = "2.4.0"
 
 google-services = "4.4.4"
+skie = "0.10.8"
 
 kotlin = "2.2.21"
 kotlinSerialization = "2.2.21"
 kotlinxDatetime = "0.7.1"
 kotlinxSerializationJson = "1.9.0"
 
-ktor = "3.3.2"
+ktor = "3.3.3"
 material3 = "1.4.0"
 navigationComposeAndroid = "2.9.6"
 
@@ -43,6 +44,7 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 [plugins]
@@ -53,3 +55,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 googleServices = {id ="com.google.gms.google-services", version.ref = "google-services"}
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }
