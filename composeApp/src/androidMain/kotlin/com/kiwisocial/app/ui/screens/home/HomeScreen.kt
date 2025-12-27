@@ -1,5 +1,6 @@
 package com.kiwisocial.app.ui.screens.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -51,7 +52,8 @@ import com.kiwisocial.app.viewModel.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel = viewModel(),
+            onPostClick: (String) -> Unit
 ) {
     val posts by homeViewModel.posts.collectAsStateWithLifecycle()
     var showCreatePostDialog by remember { mutableStateOf(false) }
@@ -84,8 +86,8 @@ Scaffold(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ){
-                items(posts){
-                    post -> PostItem(post)
+                items(posts) { post ->
+                    PostItem(post = post, onClick = { onPostClick(post.id) })
                 }
             }
         }
@@ -108,8 +110,8 @@ Scaffold(
 }
 
 @Composable
-fun PostItem(post: Post){
-    Card(modifier = Modifier.fillMaxWidth()){
+fun PostItem(post: Post, onClick: () -> Unit){
+    Card(modifier = Modifier.fillMaxWidth().clickable { onClick() }){
         Column(modifier = Modifier.padding(16.dp)){
             post.author.username?.let { Text(text = it, fontWeight = FontWeight.Bold) }
             Spacer(modifier = Modifier.height(8.dp))

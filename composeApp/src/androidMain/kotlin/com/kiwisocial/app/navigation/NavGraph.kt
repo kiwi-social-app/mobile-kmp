@@ -17,12 +17,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.kiwisocial.app.ui.screens.chat.ChatScreen
 import com.kiwisocial.app.ui.screens.home.HomeScreen
+import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
 
 @Composable
@@ -62,15 +65,23 @@ fun NavGraph() {
                     }
                 )
             }
-            composable("home"){ HomeScreen() }
+            composable("home"){ HomeScreen(onPostClick = { postId ->
+                navController.navigate("post_details/$postId")
+            }) }
             composable("chat") { ChatScreen() }
             composable("profile") { ProfileScreen() }
+        composable(
+            route = "post_details/{postId}",
+            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val postId = backStackEntry.arguments?.getString("postId") ?: ""
+            PostDetailScreen(postId = postId, onBack = { navController.popBackStack() })
+        }
 
         }
 
 }
 }
-
 
 enum class Destination(
     val route: String,
