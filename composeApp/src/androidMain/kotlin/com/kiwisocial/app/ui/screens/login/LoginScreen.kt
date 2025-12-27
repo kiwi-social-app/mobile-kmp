@@ -1,3 +1,5 @@
+package com.kiwisocial.app.ui.screens.login
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
