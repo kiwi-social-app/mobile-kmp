@@ -27,6 +27,7 @@ import com.kiwisocial.app.ui.screens.chat.ChatScreen
 import com.kiwisocial.app.ui.screens.home.HomeScreen
 import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
+import com.kiwisocial.app.ui.screens.signup.SignupScreen
 
 @Composable
 fun NavGraph() {
@@ -62,7 +63,8 @@ fun NavGraph() {
                         navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                         }
-                    }
+                    },
+                    onNavigateToSignup = { navController.navigate("signup") }
                 )
             }
             composable("home"){ HomeScreen(onPostClick = { postId ->
@@ -77,6 +79,14 @@ fun NavGraph() {
             val postId = backStackEntry.arguments?.getString("postId") ?: ""
             PostDetailScreen(postId = postId, onBack = { navController.popBackStack() })
         }
+        composable("signup"){ SignupScreen(
+            onNavigateToLogin = { navController.navigate("login") },
+            onSignupSuccess = {
+                navController.navigate("home") {
+                    popUpTo("login") { inclusive = true }
+                }
+            }
+        ) }
 
         }
 

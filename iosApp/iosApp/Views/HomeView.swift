@@ -25,7 +25,7 @@ struct HomeView: View {
                         }
                     }
                 }
-                .navigationTitle("Kiwi Social")
+                .navigationTitle("Posts")
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         Button(action: { showCreatePostDialog = true }) {

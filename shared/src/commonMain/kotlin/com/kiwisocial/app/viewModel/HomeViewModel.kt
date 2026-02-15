@@ -32,7 +32,7 @@ class HomeViewModel: ViewModel() {
         viewModelScope.launch{
             try{
                 val currentUser = Firebase.auth.currentUser
-                if(currentUser === null){
+                if(currentUser == null){
                     println("Error: User not authenticated")
                     return@launch
                 }

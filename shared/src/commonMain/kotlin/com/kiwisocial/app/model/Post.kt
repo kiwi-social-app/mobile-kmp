@@ -11,10 +11,8 @@ import kotlin.time.ExperimentalTime
 data class Post(
     val id: String,
     val body: String,
-    @Contextual
-    val createdAt: Instant,
-    @Contextual
-    val updatedAt: Instant?,
+    val createdAt: String,
+    val updatedAt: String?,
     val published: Boolean,
     val author: UserBasic,
     val favoritedBy: List<String>,

@@ -1,7 +1,8 @@
-package com.kiwisocial.app.ui.screens.login
+package com.kiwisocial.app.ui.screens.signup
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,14 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kiwisocial.app.viewModel.SignupViewModel
 import kotlinx.coroutines.launch
-import com.kiwisocial.app.viewModel.LoginViewModel
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onNavigateToSignup: () -> Unit,
-    viewModel: LoginViewModel =  viewModel()
+fun SignupScreen(
+    onNavigateToLogin: () -> Unit,
+    onSignupSuccess: () -> Unit,
+    viewModel: SignupViewModel = viewModel(),
 ) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -48,7 +49,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -71,28 +72,24 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = {
-                    viewModel.login(
-                        onSuccess = onLoginSuccess,
-                        onError = { message ->
-                            scope.launch {
-                                snackbarHostState.showSnackbar(message)
-                            }
-                        }
-                    )
-                },
-                enabled = !isLoading
-            ) {
-                Text(if (isLoading) "Logging in..." else "Login")
+            Row {
+                Button(
+                    onClick = {
+                        viewModel.signUp(email, password,  onSignupSuccess)
+                    },
+                    enabled = !isLoading
+                ) {
+                    Text(if (isLoading) "Signing up..." else "Signup")
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                TextButton(
+                    onClick = onNavigateToLogin,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Already have an account? Log in")
+                }
             }
-            Spacer(modifier = Modifier.width(16.dp))
-            TextButton(
-                onClick = onNavigateToSignup,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Don't have an account? Sign up")
-            }
+
         }
     }
 }
