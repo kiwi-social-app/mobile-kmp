@@ -49,10 +49,10 @@ class PostDataSource {
     }
 
 
-    suspend fun createPost(userId: String, createPost: CreatePost): Post {
+    suspend fun createPost(createPost: CreatePost): Post {
         return client.post(postsUrl) {
             contentType(ContentType.Application.Json)
-            parameter("userId", userId)
+            getAuthToken()?.let { bearerAuth(it) }
             setBody(createPost)
         }.body()
     }

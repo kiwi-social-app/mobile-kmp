@@ -38,7 +38,6 @@ class HomeViewModel: ViewModel() {
                 }
 
                 val newPost = postDataSource.createPost(
-                    userId=currentUser.uid,
                     CreatePost(body = body)
                 )
                 _posts.value = listOf(newPost) + _posts.value
