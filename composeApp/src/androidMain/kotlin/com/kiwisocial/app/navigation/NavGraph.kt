@@ -2,10 +2,6 @@ package com.kiwisocial.app.navigation
 
 import com.kiwisocial.app.ui.screens.login.LoginScreen
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
@@ -15,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,6 +24,7 @@ import com.kiwisocial.app.ui.screens.home.HomeScreen
 import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
 import com.kiwisocial.app.ui.screens.signup.SignupScreen
+import com.kiwisocial.app.viewModel.PostDetailViewModel
 
 @Composable
 fun NavGraph() {
@@ -77,7 +74,11 @@ fun NavGraph() {
             arguments = listOf(navArgument("postId") { type = NavType.StringType })
         ) { backStackEntry ->
             val postId = backStackEntry.arguments?.getString("postId") ?: ""
-            PostDetailScreen(postId = postId, onBack = { navController.popBackStack() })
+            val viewModel: PostDetailViewModel = viewModel {
+                PostDetailViewModel(postId = postId)
+            }
+
+            PostDetailScreen(postDetailViewModel = viewModel, onBack = { navController.popBackStack() })
         }
         composable("signup"){ SignupScreen(
             onNavigateToLogin = { navController.navigate("login") },
@@ -93,13 +94,3 @@ fun NavGraph() {
 }
 }
 
-enum class Destination(
-    val route: String,
-    val label: String,
-    val icon: ImageVector,
-    val contentDescription: String
-) {
-    HOME("home", "Home", Icons.Default.Home, "Home"),
-    CHAT("chat", "Chat", Icons.Default.ChatBubble, "Chat"),
-    PROFILE("profile", "Profile", Icons.Default.Person, "Profile")
-}

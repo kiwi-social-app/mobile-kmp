@@ -2,8 +2,6 @@
 
 package com.kiwisocial.app.model
 
-import kotlin.time.Instant
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 
