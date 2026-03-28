@@ -19,6 +19,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import com.kiwisocial.app.model.CreatePost
 import com.kiwisocial.app.model.Post
+import io.ktor.client.request.delete
 import io.ktor.http.ContentType
 
 class PostDataSource {
@@ -60,5 +61,41 @@ class PostDataSource {
         return client.get("$postsUrl/$postId"){
             getAuthToken()?.let { bearerAuth(it) }
         }.body()
+    }
+
+    suspend fun addLike(postId: String) {
+         client.post("$postsUrl/$postId/like"){
+            getAuthToken()?.let { bearerAuth(it) }
+        }
+    }
+
+    suspend fun removeLike(postId: String) {
+         client.delete("$postsUrl/$postId/like"){
+            getAuthToken()?.let { bearerAuth(it) }
+        }
+    }
+
+    suspend fun addDislike(postId: String) {
+         client.post("$postsUrl/$postId/dislike"){
+            getAuthToken()?.let { bearerAuth(it) }
+        }
+    }
+
+    suspend fun removeDislike(postId: String) {
+         client.delete("$postsUrl/$postId/dislike"){
+            getAuthToken()?.let { bearerAuth(it) }
+        }
+    }
+
+    suspend fun favoritePost(postId: String) {
+         client.post("$postsUrl/$postId/favorite"){
+            getAuthToken()?.let { bearerAuth(it) }
+        }
+    }
+
+    suspend fun unFavoritePost(postId: String) {
+         client.delete("$postsUrl/$postId/favorite"){
+            getAuthToken()?.let { bearerAuth(it) }
+        }
     }
 }

@@ -25,12 +25,15 @@ import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
 import com.kiwisocial.app.ui.screens.signup.SignupScreen
 import com.kiwisocial.app.viewModel.PostDetailViewModel
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
 
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val currentUserId = Firebase.auth.currentUser?.uid
 
     Scaffold(bottomBar = {
     if (currentRoute != "login") {
@@ -64,9 +67,9 @@ fun NavGraph() {
                     onNavigateToSignup = { navController.navigate("signup") }
                 )
             }
-            composable("home"){ HomeScreen(onPostClick = { postId ->
+            composable("home"){ HomeScreen( onPostClick = { postId ->
                 navController.navigate("post_details/$postId")
-            }) }
+            }, currentUserId = currentUserId ?: return@composable) }
             composable("chat") { ChatScreen() }
             composable("profile") { ProfileScreen() }
         composable(

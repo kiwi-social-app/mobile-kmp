@@ -8,6 +8,7 @@ import com.kiwisocial.app.model.Comment
 import com.kiwisocial.app.model.CreateComment
 import com.kiwisocial.app.model.Post
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,8 @@ sealed class PostDetailState {
     data object Loading : PostDetailState()
     data class Success(
         val post: Post,
-        val comments: List<Comment> = emptyList()
+        val comments: List<Comment> = emptyList(),
+        val currentUser: FirebaseUser? = Firebase.auth.currentUser
     ) : PostDetailState()
     data class Error(val message: String) : PostDetailState()
 }
