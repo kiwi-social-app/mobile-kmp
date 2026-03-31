@@ -1,6 +1,7 @@
 package com.kiwisocial.app.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -14,5 +15,6 @@ enum class Destination(
 ) {
     HOME("home", "Home", Icons.Default.Home, "Home"),
     CHAT("chat", "Chat", Icons.Default.ChatBubble, "Chat"),
-    PROFILE("profile", "Profile", Icons.Default.Person, "Profile")
+    PROFILE("profile", "Profile", Icons.Default.Person, "Profile"),
+    SAVED_POSTS("saved_posts", "Saved", Icons.Default.Bookmark, "SavedPosts"),
 }

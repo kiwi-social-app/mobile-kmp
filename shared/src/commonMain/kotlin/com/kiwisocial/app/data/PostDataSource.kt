@@ -48,6 +48,11 @@ class PostDataSource {
         }.body()
     }
 
+    suspend fun getFavoritePosts(): List<Post> {
+        return client.get("$postsUrl/favorites") {
+            getAuthToken()?.let { bearerAuth(it) }
+        }.body()
+    }
 
     suspend fun createPost(createPost: CreatePost): Post {
         return client.post(postsUrl) {

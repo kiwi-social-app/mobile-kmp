@@ -23,6 +23,7 @@ import com.kiwisocial.app.ui.screens.chat.ChatScreen
 import com.kiwisocial.app.ui.screens.home.HomeScreen
 import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
+import com.kiwisocial.app.ui.screens.savedPosts.SavedPostsScreen
 import com.kiwisocial.app.ui.screens.signup.SignupScreen
 import com.kiwisocial.app.viewModel.PostDetailViewModel
 import dev.gitlive.firebase.Firebase
@@ -70,7 +71,14 @@ fun NavGraph() {
             composable("home"){ HomeScreen( onPostClick = { postId ->
                 navController.navigate("post_details/$postId")
             }, currentUserId = currentUserId ?: return@composable) }
-            composable("chat") { ChatScreen() }
+            composable("saved_posts"){
+                SavedPostsScreen(
+                    currentUserId = currentUserId ?: return@composable,
+                    onPostClick = { postId ->
+                    navController.navigate("post_details/$postId")
+                })
+            }
+        composable("chat") { ChatScreen() }
             composable("profile") { ProfileScreen() }
         composable(
             route = "post_details/{postId}",
