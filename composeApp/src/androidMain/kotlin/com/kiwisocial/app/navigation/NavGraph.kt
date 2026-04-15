@@ -9,8 +9,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -25,16 +27,26 @@ import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
 import com.kiwisocial.app.ui.screens.savedPosts.SavedPostsScreen
 import com.kiwisocial.app.ui.screens.signup.SignupScreen
+import com.kiwisocial.app.viewModel.AuthViewModel
 import com.kiwisocial.app.viewModel.PostDetailViewModel
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
 
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val currentUserId = Firebase.auth.currentUser?.uid
+
+    val authViewModel: AuthViewModel = viewModel()
+    val currentUser by authViewModel.currentUser.collectAsStateWithLifecycle()
+    val currentUserId = currentUser?.uid
+
+    LaunchedEffect(currentUser, currentRoute) {
+        if (currentUser == null && currentRoute != null && currentRoute != "login" && currentRoute != "signup") {
+            navController.navigate("login") {
+                popUpTo(navController.graph.id) { inclusive = true }
+            }
+        }
+    }
 
     Scaffold(bottomBar = {
     if (currentRoute != "login") {
@@ -96,7 +108,8 @@ fun NavGraph() {
                 val userId = backStackEntry.arguments?.getString("userId")
                 ProfileScreen(
                     userId = userId,
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onSignOut = { authViewModel.signOut() }
                 )
             }
         composable(
