@@ -68,9 +68,15 @@ fun NavGraph() {
                     onNavigateToSignup = { navController.navigate("signup") }
                 )
             }
-            composable("home"){ HomeScreen( onPostClick = { postId ->
-                navController.navigate("post_details/$postId")
-            }, currentUserId = currentUserId ?: return@composable) }
+            composable("home"){ HomeScreen(
+                onPostClick = { postId ->
+                    navController.navigate("post_details/$postId")
+                },
+                onAuthorClick = { authorId ->
+                    navController.navigate("profile?userId=$authorId")
+                },
+                currentUserId = currentUserId ?: return@composable
+            ) }
             composable("saved_posts"){
                 SavedPostsScreen(
                     currentUserId = currentUserId ?: return@composable,
@@ -79,7 +85,20 @@ fun NavGraph() {
                 })
             }
         composable("chat") { ChatScreen() }
-            composable("profile") { ProfileScreen() }
+            composable(
+                route = "profile?userId={userId}",
+                arguments = listOf(navArgument("userId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                })
+            ) { backStackEntry ->
+                val userId = backStackEntry.arguments?.getString("userId")
+                ProfileScreen(
+                    userId = userId,
+                    onBack = { navController.popBackStack() }
+                )
+            }
         composable(
             route = "post_details/{postId}",
             arguments = listOf(navArgument("postId") { type = NavType.StringType })
@@ -89,7 +108,13 @@ fun NavGraph() {
                 PostDetailViewModel(postId = postId)
             }
 
-            PostDetailScreen(postDetailViewModel = viewModel, onBack = { navController.popBackStack() })
+            PostDetailScreen(
+                postDetailViewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onAuthorClick = { authorId ->
+                    navController.navigate("profile?userId=$authorId")
+                }
+            )
         }
         composable("signup"){ SignupScreen(
             onNavigateToLogin = { navController.navigate("login") },

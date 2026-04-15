@@ -1,0 +1,43 @@
+package com.kiwisocial.app.data
+
+import com.kiwisocial.app.baseUrl
+import com.kiwisocial.app.model.User
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.get
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+
+class UserDataSource {
+    private val client = HttpClient {
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+            })
+        }
+        install(Logging) {
+            logger = Logger.SIMPLE
+            level = LogLevel.ALL
+        }
+    }
+
+    private val userUrl = "$baseUrl/api/users"
+
+    private suspend fun getAuthToken(): String? {
+        return Firebase.auth.currentUser?.getIdToken(false)
+    }
+
+    suspend fun getUserById(id: String): User {
+        return client.get("$userUrl/$id") {
+            getAuthToken()?.let { bearerAuth(it) }
+        }.body()
+    }
+}

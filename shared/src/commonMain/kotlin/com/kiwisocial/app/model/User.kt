@@ -5,13 +5,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class User(
     val id: String,
-    val username: String,
+    val username: String?,
     val email: String,
-    val firstname: String,
-    val lastname: String,
-    val posts: List<Post>,
-    val chats: List<Chat>,
-    val favorites: List<String>,
-    val likedPosts: List<String>,
-    val dislikedPosts: List<String>
+    val firstname: String?,
+    val lastname: String?,
+    val chats: List<Chat>? = null,
+    val favorites: List<String> = emptyList(),
+    val likedPosts: List<String> = emptyList(),
+    val dislikedPosts: List<String> = emptyList()
 )

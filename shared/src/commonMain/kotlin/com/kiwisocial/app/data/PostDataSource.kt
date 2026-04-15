@@ -68,6 +68,18 @@ class PostDataSource {
         }.body()
     }
 
+    suspend fun getCurrentUserPosts(): List<Post>{
+        return client.get("$postsUrl/mine"){
+            getAuthToken()?.let { bearerAuth(it) }
+        }.body()
+    }
+
+    suspend fun getPostsByUser(userId: String): List<Post> {
+        return client.get("$postsUrl/user/$userId") {
+            getAuthToken()?.let { bearerAuth(it) }
+        }.body()
+    }
+
     suspend fun addLike(postId: String) {
          client.post("$postsUrl/$postId/like"){
             getAuthToken()?.let { bearerAuth(it) }

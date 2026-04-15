@@ -1,5 +1,6 @@
 package com.kiwisocial.app.ui.screens.postDetail
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,8 @@ import com.kiwisocial.app.viewModel.PostDetailViewModel
 @Composable
 fun PostDetailScreen(
     postDetailViewModel: PostDetailViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onAuthorClick: (String) -> Unit
 ) {
     val uiState by postDetailViewModel.uiState.collectAsStateWithLifecycle()
     var commentText by remember { mutableStateOf("") }
@@ -126,7 +128,12 @@ fun PostDetailScreen(
                 ) {
                     item { Spacer(modifier = Modifier.height(4.dp)) }
 
-                    item { PostDetailCard(post = state.post) }
+                    item {
+                        PostDetailCard(
+                            post = state.post,
+                            onAuthorClick = { onAuthorClick(state.post.author.id) }
+                        )
+                    }
 
                     item {
                         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
@@ -138,7 +145,10 @@ fun PostDetailScreen(
                     }
 
                     items(state.comments) { comment ->
-                        CommentItem(comment = comment)
+                        CommentItem(
+                            comment = comment,
+                            onAuthorClick = { onAuthorClick(comment.author.id) }
+                        )
                     }
 
                     item { Spacer(modifier = Modifier.height(8.dp)) }
@@ -149,11 +159,15 @@ fun PostDetailScreen(
 }
 
 @Composable
-private fun PostDetailCard(post: Post) {
+private fun PostDetailCard(post: Post, onAuthorClick: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
             post.author.username?.let {
-                Text(text = it, fontWeight = FontWeight.Bold)
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable { onAuthorClick() }
+                )
                 Spacer(modifier = Modifier.height(4.dp))
             }
             Text(text = post.body, style = MaterialTheme.typography.bodyLarge)
@@ -168,11 +182,16 @@ private fun PostDetailCard(post: Post) {
 }
 
 @Composable
-private fun CommentItem(comment: Comment) {
+private fun CommentItem(comment: Comment, onAuthorClick: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(12.dp)) {
             comment.author.username?.let {
-                Text(text = it, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.clickable { onAuthorClick() }
+                )
                 Spacer(modifier = Modifier.height(2.dp))
             }
             Text(text = comment.body, style = MaterialTheme.typography.bodyMedium)

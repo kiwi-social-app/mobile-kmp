@@ -40,6 +40,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,7 +55,8 @@ import com.kiwisocial.app.viewModel.HomeViewModel
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
     currentUserId: String,
-            onPostClick: (String) -> Unit
+            onPostClick: (String) -> Unit,
+    onAuthorClick: (String) -> Unit
 ) {
     val posts by homeViewModel.posts.collectAsStateWithLifecycle()
     var showCreatePostDialog by remember { mutableStateOf(false) }
@@ -66,6 +68,9 @@ fun HomeScreen(
     }
 
 Scaffold(
+    topBar = {
+        TopAppBar(title = { Text("Home") })
+    },
     floatingActionButton = {
         FloatingActionButton(onClick = { showCreatePostDialog = true }) {
             Icon(Icons.Default.Add, contentDescription = "Create Post")
@@ -88,7 +93,13 @@ Scaffold(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ){
                 items(posts) { post ->
-                    PostItem(post = post, onClick = { onPostClick(post.id) }, currentUserId = currentUserId, homeViewModel)
+                    PostItem(
+                        post = post,
+                        onClick = { onPostClick(post.id) },
+                        onAuthorClick = { onAuthorClick(post.author.id) },
+                        currentUserId = currentUserId,
+                        viewModel = homeViewModel
+                    )
                 }
             }
         }
@@ -111,14 +122,26 @@ Scaffold(
 }
 
 @Composable
-fun PostItem(post: Post, onClick: () -> Unit, currentUserId: String?, viewModel: HomeViewModel){
+fun PostItem(
+    post: Post,
+    onClick: () -> Unit,
+    onAuthorClick: () -> Unit,
+    currentUserId: String?,
+    viewModel: HomeViewModel
+){
     val isLiked = currentUserId != null && post.likedByUsers.contains(currentUserId)
     val isDisliked = currentUserId != null && post.dislikedByUsers.contains(currentUserId)
     val isSaved = currentUserId != null && post.favoritedBy.contains(currentUserId)
 
     Card(modifier = Modifier.fillMaxWidth().clickable { onClick() }){
         Column(modifier = Modifier.padding(16.dp)){
-            post.author.username?.let { Text(text = it, fontWeight = FontWeight.Bold) }
+            post.author.username?.let {
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable { onAuthorClick() }
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = post.body)
             Row {
