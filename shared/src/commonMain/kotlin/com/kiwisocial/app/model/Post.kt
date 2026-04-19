@@ -22,3 +22,8 @@ data class Post(
 data class CreatePost(
     val body: String,
 )
+
+@Serializable
+data class UpdatePost(
+    val body: String,
+)

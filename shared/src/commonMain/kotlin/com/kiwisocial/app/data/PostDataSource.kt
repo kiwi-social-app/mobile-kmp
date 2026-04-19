@@ -19,12 +19,15 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import com.kiwisocial.app.model.CreatePost
 import com.kiwisocial.app.model.Post
+import com.kiwisocial.app.model.UpdatePost
 import io.ktor.client.request.delete
+import io.ktor.client.request.put
 import io.ktor.http.ContentType
 
 class PostDataSource {
 
     private val client = HttpClient {
+        expectSuccess = true
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -66,6 +69,20 @@ class PostDataSource {
         return client.get("$postsUrl/$postId"){
             getAuthToken()?.let { bearerAuth(it) }
         }.body()
+    }
+
+    suspend fun updatePost(postId: String, update: UpdatePost): Post {
+        return client.put("$postsUrl/$postId") {
+            contentType(ContentType.Application.Json)
+            getAuthToken()?.let { bearerAuth(it) }
+            setBody(update)
+        }.body()
+    }
+
+    suspend fun deletePost(postId: String) {
+        client.delete("$postsUrl/$postId") {
+            getAuthToken()?.let { bearerAuth(it) }
+        }
     }
 
     suspend fun getCurrentUserPosts(): List<Post>{

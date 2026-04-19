@@ -14,3 +14,11 @@ data class User(
     val likedPosts: List<String> = emptyList(),
     val dislikedPosts: List<String> = emptyList()
 )
+
+@Serializable
+data class UserUpdate(
+    val username: String?,
+    val email: String,
+    val firstname: String?,
+    val lastname: String?
+)

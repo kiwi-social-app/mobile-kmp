@@ -126,7 +126,8 @@ fun NavGraph() {
                 onBack = { navController.popBackStack() },
                 onAuthorClick = { authorId ->
                     navController.navigate("profile?userId=$authorId")
-                }
+                },
+                onPostDeleted = { navController.popBackStack() }
             )
         }
         composable("signup"){ SignupScreen(

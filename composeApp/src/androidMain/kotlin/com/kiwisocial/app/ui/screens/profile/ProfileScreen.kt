@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -23,6 +25,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -55,6 +59,11 @@ fun ProfileScreen(
     val user by profileViewModel.user.collectAsStateWithLifecycle()
     val posts by profileViewModel.posts.collectAsStateWithLifecycle()
     val isCurrentUser by profileViewModel.isCurrentUser.collectAsStateWithLifecycle()
+    val isEditing by profileViewModel.isEditing.collectAsStateWithLifecycle()
+    val editUsername by profileViewModel.editUsername.collectAsStateWithLifecycle()
+    val editEmail by profileViewModel.editEmail.collectAsStateWithLifecycle()
+    val editFirstname by profileViewModel.editFirstname.collectAsStateWithLifecycle()
+    val editLastname by profileViewModel.editLastname.collectAsStateWithLifecycle()
 
     var showMenu by remember { mutableStateOf(false) }
     var showSignOutDialog by remember { mutableStateOf(false) }
@@ -87,6 +96,13 @@ fun ProfileScreen(
                                 onDismissRequest = { showMenu = false }
                             ) {
                                 DropdownMenuItem(
+                                    text = { Text("Edit profile") },
+                                    onClick = {
+                                        showMenu = false
+                                        profileViewModel.startEditing()
+                                    }
+                                )
+                                DropdownMenuItem(
                                     text = { Text("Sign out") },
                                     onClick = {
                                         showMenu = false
@@ -118,7 +134,24 @@ fun ProfileScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                item { UserInfoCard(currentUser) }
+                item {
+                    if (isEditing) {
+                        EditUserInfoCard(
+                            username = editUsername,
+                            email = editEmail,
+                            firstname = editFirstname,
+                            lastname = editLastname,
+                            onUsernameChange = profileViewModel::onEditUsernameChange,
+                            onEmailChange = profileViewModel::onEditEmailChange,
+                            onFirstnameChange = profileViewModel::onEditFirstnameChange,
+                            onLastnameChange = profileViewModel::onEditLastnameChange,
+                            onSave = profileViewModel::saveProfile,
+                            onCancel = profileViewModel::cancelEditing
+                        )
+                    } else {
+                        UserInfoCard(currentUser)
+                    }
+                }
                 item {
                     Text(
                         text = "Posts",
@@ -180,6 +213,63 @@ private fun UserInfoCard(user: User) {
             if (fullName != null) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = fullName, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+@Composable
+private fun EditUserInfoCard(
+    username: String,
+    email: String,
+    firstname: String,
+    lastname: String,
+    onUsernameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onFirstnameChange: (String) -> Unit,
+    onLastnameChange: (String) -> Unit,
+    onSave: () -> Unit,
+    onCancel: () -> Unit
+) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            OutlinedTextField(
+                value = username,
+                onValueChange = onUsernameChange,
+                label = { Text("Username") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = email,
+                onValueChange = onEmailChange,
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = firstname,
+                onValueChange = onFirstnameChange,
+                label = { Text("First name") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = lastname,
+                onValueChange = onLastnameChange,
+                label = { Text("Last name") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    onClick = onSave,
+                    enabled = email.isNotBlank()
+                ) { Text("Save") }
+                OutlinedButton(onClick = onCancel) { Text("Cancel") }
             }
         }
     }
