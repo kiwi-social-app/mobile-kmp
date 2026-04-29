@@ -9,15 +9,70 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.kiwisocial.app.data.PostDataSource
+import com.kiwisocial.app.data.SearchDataSource
 import com.kiwisocial.app.model.CreatePost
 import com.kiwisocial.app.model.Post
+import com.kiwisocial.app.model.SearchResult
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlin.collections.emptyList
+import kotlin.time.Duration.Companion.milliseconds
 
 class HomeViewModel: ViewModel() {
     private val postDataSource = PostDataSource()
+    private val searchDataSource = SearchDataSource()
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     val posts: StateFlow<List<Post>> = _posts.asStateFlow()
     private val currentUser = Firebase.auth.currentUser
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val searchResults: StateFlow<List<SearchResult>> = _searchQuery
+        .debounce(300.milliseconds)
+        .distinctUntilChanged()
+        .mapLatest { query ->
+            if(query.isBlank()){
+                emptyList()
+            } else {
+                try {
+                    searchDataSource.search(query)
+                } catch(e: Exception){
+                    e.printStackTrace()
+                    emptyList()
+                }
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    val displayedPosts: StateFlow<List<Post>> = combine(_posts, searchResults) { posts, results ->
+        if (results.isEmpty()) {
+            posts
+        } else {
+            val byId = posts.associateBy { it.id }
+            results.mapNotNull { it.postId?.let(byId::get) }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    fun onQueryChange(q: String) {
+        _searchQuery.value = q
+    }
 
     fun fetchPosts(){
         viewModelScope.launch {
@@ -64,7 +119,6 @@ class HomeViewModel: ViewModel() {
             }
         }
     }
-
 
     fun removeLike(postId: String){
         val userId = currentUser?.uid ?: return

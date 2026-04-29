@@ -40,6 +40,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -58,9 +59,9 @@ fun HomeScreen(
             onPostClick: (String) -> Unit,
     onAuthorClick: (String) -> Unit
 ) {
-    val posts by homeViewModel.posts.collectAsStateWithLifecycle()
+    val posts by homeViewModel.displayedPosts.collectAsStateWithLifecycle()
     var showCreatePostDialog by remember { mutableStateOf(false) }
-
+    val query by homeViewModel.searchQuery.collectAsStateWithLifecycle()
 
 
     LaunchedEffect(Unit) {
@@ -78,28 +79,40 @@ Scaffold(
     }
 ) {
     paddingValues ->
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues),
-        contentAlignment = Alignment.Center
-    ){
-        if(posts.isEmpty()){
-            CircularProgressIndicator()
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ){
-                items(posts) { post ->
-                    PostItem(
-                        post = post,
-                        onClick = { onPostClick(post.id) },
-                        onAuthorClick = { onAuthorClick(post.author.id) },
-                        currentUserId = currentUserId,
-                        viewModel = homeViewModel
-                    )
+            .padding(paddingValues)
+    ) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = homeViewModel::onQueryChange,
+            label = { Text("Search") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                posts.isEmpty() && query.isBlank() -> CircularProgressIndicator()
+                posts.isEmpty() -> Text("No results")
+                else -> LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(posts) { post ->
+                        PostItem(
+                            post = post,
+                            onClick = { onPostClick(post.id) },
+                            onAuthorClick = { onAuthorClick(post.author.id) },
+                            currentUserId = currentUserId,
+                            viewModel = homeViewModel
+                        )
+                    }
                 }
             }
         }
