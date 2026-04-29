@@ -2,15 +2,15 @@ package com.kiwisocial.app.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.FirebaseAuth
-import dev.gitlive.firebase.auth.auth
+import com.kiwisocial.app.data.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel(){
+class LoginViewModel(
+    private val authRepository: AuthRepository,
+) : ViewModel() {
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email.asStateFlow()
@@ -24,8 +24,6 @@ class LoginViewModel : ViewModel(){
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    private val auth: FirebaseAuth by lazy { Firebase.auth }
-
     fun onEmailChange(newEmail: String) {
         _email.value = newEmail
     }
@@ -35,12 +33,11 @@ class LoginViewModel : ViewModel(){
     }
 
     fun login(onSuccess: () -> Unit, onError: (String) -> Unit) {
-
         viewModelScope.launch {
-        _isLoading.value = true
-        _errorMessage.value = null
+            _isLoading.value = true
+            _errorMessage.value = null
             try {
-                val result = auth.signInWithEmailAndPassword(_email.value, _password.value)
+                val result = authRepository.signInWithEmail(_email.value, _password.value)
                 if (result.user != null) {
                     onSuccess()
                 } else {
@@ -50,6 +47,23 @@ class LoginViewModel : ViewModel(){
                 }
             } catch (e: Exception) {
                 val msg = e.message ?: "An error occurred"
+                _errorMessage.value = msg
+                onError(msg)
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun signInWithGoogle(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            try {
+                authRepository.signInWithGoogle()
+                onSuccess()
+            } catch (e: Exception) {
+                val msg = e.message ?: "Google sign-in failed"
                 _errorMessage.value = msg
                 onError(msg)
             } finally {

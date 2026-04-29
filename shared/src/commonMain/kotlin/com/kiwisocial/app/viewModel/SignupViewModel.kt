@@ -3,16 +3,16 @@ package com.kiwisocial.app.viewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.FirebaseAuth
+import com.kiwisocial.app.data.AuthRepository
 import dev.gitlive.firebase.auth.FirebaseUser
-import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SignupViewModel: ViewModel() {
+class SignupViewModel(
+    private val authRepository: AuthRepository,
+) : ViewModel() {
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email.asStateFlow()
@@ -26,8 +26,6 @@ class SignupViewModel: ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    private val auth: FirebaseAuth by lazy { Firebase.auth }
-
     val authState = mutableStateOf<AuthState>(AuthState.Idle)
 
     fun onEmailChange(newEmail: String) {
@@ -38,29 +36,45 @@ class SignupViewModel: ViewModel() {
         _password.value = newPassword
     }
 
-
-    suspend fun signUpWithEmail(email: String, password: String): Result<FirebaseUser> {
-        return try {
-            val result = auth.createUserWithEmailAndPassword(email, password)
-            Result.success(result.user!!)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
     fun signUp(email: String, password: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             authState.value = AuthState.Loading
+            _isLoading.value = true
+            _errorMessage.value = null
             try {
-                val result = signUpWithEmail(email, password)
-                authState.value = if (result.isSuccess) {
+                val result = authRepository.signUpWithEmail(email, password)
+                val user = result.user
+                if (user != null) {
+                    authState.value = AuthState.Success(user)
                     onSuccess()
-                    AuthState.Success(result.getOrNull())
                 } else {
-                    AuthState.Error(result.exceptionOrNull()?.message ?: "Signup failed")
+                    val msg = "Signup failed"
+                    authState.value = AuthState.Error(msg)
+                    _errorMessage.value = msg
                 }
             } catch (e: Exception) {
-                authState.value = AuthState.Error(e.message ?: "Signup failed")
+                val msg = e.message ?: "Signup failed"
+                authState.value = AuthState.Error(msg)
+                _errorMessage.value = msg
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun signInWithGoogle(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            try {
+                authRepository.signInWithGoogle()
+                onSuccess()
+            } catch (e: Exception) {
+                val msg = e.message ?: "Google sign-in failed"
+                _errorMessage.value = msg
+                onError(msg)
+            } finally {
+                _isLoading.value = false
             }
         }
     }

@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kiwisocial.app.data.AuthRepository
 import com.kiwisocial.app.ui.screens.chat.ChatScreen
 import com.kiwisocial.app.ui.screens.home.HomeScreen
 import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
@@ -28,10 +29,12 @@ import com.kiwisocial.app.ui.screens.profile.ProfileScreen
 import com.kiwisocial.app.ui.screens.savedPosts.SavedPostsScreen
 import com.kiwisocial.app.ui.screens.signup.SignupScreen
 import com.kiwisocial.app.viewModel.AuthViewModel
+import com.kiwisocial.app.viewModel.LoginViewModel
 import com.kiwisocial.app.viewModel.PostDetailViewModel
+import com.kiwisocial.app.viewModel.SignupViewModel
 
 @Composable
-fun NavGraph() {
+fun NavGraph(authRepository: AuthRepository) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -71,16 +74,21 @@ fun NavGraph() {
 }){
             innerPadding ->  NavHost(navController = navController, startDestination = "login", modifier = Modifier.padding(innerPadding)) {
             composable("login") {
+                val loginViewModel: LoginViewModel = viewModel {
+                    LoginViewModel(authRepository)
+                }
                 LoginScreen(
                     onLoginSuccess = {
                         navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                         }
                     },
-                    onNavigateToSignup = { navController.navigate("signup") }
+                    onNavigateToSignup = { navController.navigate("signup") },
+                    viewModel = loginViewModel,
                 )
             }
-            composable("home"){ HomeScreen(
+            composable("home"){
+                HomeScreen(
                 onPostClick = { postId ->
                     navController.navigate("post_details/$postId")
                 },
@@ -88,7 +96,8 @@ fun NavGraph() {
                     navController.navigate("profile?userId=$authorId")
                 },
                 currentUserId = currentUserId ?: return@composable
-            ) }
+            )
+            }
             composable("saved_posts"){
                 SavedPostsScreen(
                     currentUserId = currentUserId ?: return@composable,
@@ -96,7 +105,7 @@ fun NavGraph() {
                     navController.navigate("post_details/$postId")
                 })
             }
-        composable("chat") { ChatScreen() }
+            composable("chat") { ChatScreen() }
             composable(
                 route = "profile?userId={userId}",
                 arguments = listOf(navArgument("userId") {
@@ -112,7 +121,7 @@ fun NavGraph() {
                     onSignOut = { authViewModel.signOut() }
                 )
             }
-        composable(
+            composable(
             route = "post_details/{postId}",
             arguments = listOf(navArgument("postId") { type = NavType.StringType })
         ) { backStackEntry ->
@@ -120,24 +129,29 @@ fun NavGraph() {
             val viewModel: PostDetailViewModel = viewModel {
                 PostDetailViewModel(postId = postId)
             }
-
-            PostDetailScreen(
-                postDetailViewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onAuthorClick = { authorId ->
-                    navController.navigate("profile?userId=$authorId")
-                },
-                onPostDeleted = { navController.popBackStack() }
-            )
-        }
-        composable("signup"){ SignupScreen(
-            onNavigateToLogin = { navController.navigate("login") },
-            onSignupSuccess = {
-                navController.navigate("home") {
-                    popUpTo("login") { inclusive = true }
-                }
+                PostDetailScreen(
+                    postDetailViewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onAuthorClick = { authorId ->
+                        navController.navigate("profile?userId=$authorId")
+                    },
+                    onPostDeleted = { navController.popBackStack() }
+                )
             }
-        ) }
+            composable("signup") {
+                val signupViewModel: SignupViewModel = viewModel {
+                    SignupViewModel(authRepository)
+                }
+                SignupScreen(
+                    onNavigateToLogin = { navController.navigate("login") },
+                    onSignupSuccess = {
+                        navController.navigate("home") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    },
+                    viewModel = signupViewModel,
+                )
+            }
 
         }
 

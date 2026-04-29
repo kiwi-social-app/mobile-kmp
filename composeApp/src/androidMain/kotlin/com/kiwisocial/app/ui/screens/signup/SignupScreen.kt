@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -25,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kiwisocial.app.viewModel.SignupViewModel
 import kotlinx.coroutines.launch
 
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
 fun SignupScreen(
     onNavigateToLogin: () -> Unit,
     onSignupSuccess: () -> Unit,
-    viewModel: SignupViewModel = viewModel(),
+    viewModel: SignupViewModel,
 ) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -41,6 +42,10 @@ fun SignupScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    val showError: (String) -> Unit = { message ->
+        scope.launch { snackbarHostState.showSnackbar(message) }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -75,7 +80,7 @@ fun SignupScreen(
             Row {
                 Button(
                     onClick = {
-                        viewModel.signUp(email, password,  onSignupSuccess)
+                        viewModel.signUp(email, password, onSignupSuccess)
                     },
                     enabled = !isLoading
                 ) {
@@ -90,6 +95,22 @@ fun SignupScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedButton(
+                onClick = {
+                    viewModel.signInWithGoogle(
+                        onSuccess = onSignupSuccess,
+                        onError = showError,
+                    )
+                },
+                enabled = !isLoading,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Continue with Google")
+            }
         }
     }
 }

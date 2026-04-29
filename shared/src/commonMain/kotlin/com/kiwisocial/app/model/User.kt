@@ -22,3 +22,9 @@ data class UserUpdate(
     val firstname: String?,
     val lastname: String?
 )
+
+@Serializable
+data class GoogleAuthUser(
+    val uid: String,
+    val email: String,
+)
