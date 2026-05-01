@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import com.kiwisocial.app.data.AuthRepository
 import com.kiwisocial.app.data.GoogleSignInProvider
 import com.kiwisocial.app.data.UserDataSource
+import com.kiwisocial.app.data.WsChatDataSource
 import com.kiwisocial.app.navigation.NavGraph
 
 class MainActivity : ComponentActivity() {
@@ -19,10 +20,11 @@ class MainActivity : ComponentActivity() {
         )
         val userDataSource = UserDataSource()
         val authRepository = AuthRepository(googleSignInProvider, userDataSource)
+        val wsChatDataSource = WsChatDataSource()
 
         setContent {
             MaterialTheme {
-                NavGraph(authRepository = authRepository)
+                NavGraph(authRepository = authRepository, wsChatDataSource = wsChatDataSource)
             }
         }
     }

@@ -22,19 +22,23 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.kiwisocial.app.data.AuthRepository
-import com.kiwisocial.app.ui.screens.chat.ChatScreen
+import com.kiwisocial.app.data.WsChatDataSource
+import com.kiwisocial.app.ui.screens.chatDetail.ChatDetailScreen
+import com.kiwisocial.app.ui.screens.chatList.ChatListScreen
 import com.kiwisocial.app.ui.screens.home.HomeScreen
 import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
 import com.kiwisocial.app.ui.screens.savedPosts.SavedPostsScreen
 import com.kiwisocial.app.ui.screens.signup.SignupScreen
 import com.kiwisocial.app.viewModel.AuthViewModel
+import com.kiwisocial.app.viewModel.ChatDetailViewModel
+import com.kiwisocial.app.viewModel.ChatListViewModel
 import com.kiwisocial.app.viewModel.LoginViewModel
 import com.kiwisocial.app.viewModel.PostDetailViewModel
 import com.kiwisocial.app.viewModel.SignupViewModel
 
 @Composable
-fun NavGraph(authRepository: AuthRepository) {
+fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -44,11 +48,17 @@ fun NavGraph(authRepository: AuthRepository) {
     val currentUserId = currentUser?.uid
 
     LaunchedEffect(currentUser, currentRoute) {
-        if (currentUser == null && currentRoute != null && currentRoute != "login" && currentRoute != "signup") {
-            navController.navigate("login") {
-                popUpTo(navController.graph.id) { inclusive = true }
+        if(currentUser == null){
+            wsChatDataSource.disconnect()
+            if (currentRoute != null && currentRoute != "login" && currentRoute != "signup") {
+                navController.navigate("login") {
+                    popUpTo(navController.graph.id) { inclusive = true }
+                }
             }
+        } else {
+            try {wsChatDataSource.connect()} catch (_: Exception){}
         }
+
     }
 
     Scaffold(bottomBar = {
@@ -105,7 +115,27 @@ fun NavGraph(authRepository: AuthRepository) {
                     navController.navigate("post_details/$postId")
                 })
             }
-            composable("chat") { ChatScreen() }
+            composable("chat") {
+                val chatListViewModel: ChatListViewModel = viewModel { ChatListViewModel() }
+                ChatListScreen(
+                    viewModel = chatListViewModel,
+                    onChatClick = { chatId ->
+                        navController.navigate("chat/$chatId")
+                    },
+                )
+            }
+        composable(
+            route = "chat/{chatId}",
+            arguments = listOf(navArgument("chatId") { type = NavType.StringType }),
+        ) { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId") ?: return@composable
+            val vm: ChatDetailViewModel = viewModel { ChatDetailViewModel(chatId, wsChatDataSource) }
+            ChatDetailScreen(
+                viewModel = vm,
+                currentUserId = currentUserId ?: return@composable,
+                onBack = { navController.popBackStack() },
+            )
+        }
             composable(
                 route = "profile?userId={userId}",
                 arguments = listOf(navArgument("userId") {

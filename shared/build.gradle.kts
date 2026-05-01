@@ -44,6 +44,10 @@ kotlin {
             implementation(libs.ktor.client.logging)
 
             implementation(libs.kotlinx.datetime)
+            implementation(libs.krossbow.stomp.core)
+            implementation(libs.krossbow.websocket.ktor)
+            implementation(libs.krossbow.stomp.kxserialization)
+            implementation(libs.kotlinx.serialization.protobuf)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)

@@ -41,6 +41,8 @@ kotlin {
             implementation(libs.androidx.material3)
             implementation(libs.androidx.material.icons.extended)
             implementation(libs.androidx.navigation.compose.android)
+            implementation(libs.krossbow.stomp.core)
+            implementation(libs.krossbow.websocket.builtin)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

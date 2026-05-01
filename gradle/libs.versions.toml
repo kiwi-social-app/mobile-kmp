@@ -3,27 +3,29 @@ agp = "8.13.2"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
-androidx-activityCompose = "1.12.2"
-androidx-lifecycle = "2.9.6"
+androidx-activityCompose = "1.13.0"
+androidx-lifecycle = "2.10.0"
 androidx-material-icons = "1.7.8"
-credentials = "1.5.0"
-firebase-bom = "34.7.0"
-compose-multiplatform = "1.9.3"
+credentials = "1.6.0"
+firebase-bom = "34.12.0"
+compose-multiplatform = "1.10.3"
 
 firebase-kmp = "2.4.0"
 
 google-services = "4.4.4"
-googleid = "1.1.1"
-skie = "0.10.8"
+googleid = "1.2.0"
+kotlinxSerializationProtobuf = "1.11.0"
+krossbowWebsocketBuiltin = "9.3.0"
+skie = "0.10.11"
 
-kotlin = "2.2.21"
-kotlinSerialization = "2.2.21"
+kotlin = "2.3.20"
+kotlinSerialization = "2.3.20"
 kotlinxDatetime = "0.7.1"
-kotlinxSerializationJson = "1.9.0"
+kotlinxSerializationJson = "1.11.0"
 
-ktor = "3.3.3"
+ktor = "3.4.3"
 material3 = "1.4.0"
-navigationComposeAndroid = "2.9.6"
+navigationComposeAndroid = "2.9.8"
 
 [libraries]
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
@@ -45,6 +47,11 @@ googleid = { module = "com.google.android.libraries.identity.googleid:googleid",
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinxSerializationProtobuf" }
+krossbow-stomp-core = { module = "org.hildan.krossbow:krossbow-stomp-core", version.ref = "krossbowWebsocketBuiltin" }
+krossbow-stomp-kxserialization = { module = "org.hildan.krossbow:krossbow-stomp-kxserialization", version.ref = "krossbowWebsocketBuiltin" }
+krossbow-websocket-builtin = { module = "org.hildan.krossbow:krossbow-websocket-builtin", version.ref = "krossbowWebsocketBuiltin" }
+krossbow-websocket-ktor = { module = "org.hildan.krossbow:krossbow-websocket-ktor", version.ref = "krossbowWebsocketBuiltin" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

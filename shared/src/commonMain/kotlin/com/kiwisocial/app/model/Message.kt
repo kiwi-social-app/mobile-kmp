@@ -1,16 +1,23 @@
-@file:OptIn(ExperimentalTime::class)
-
 package com.kiwisocial.app.model
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @Serializable
 data class Message(
-    val senderId: String,
+    val id: String,
+    val chatId: String,
+    val sender: UserBasic,
     val content: String,
-    @Contextual
-    val timestamp: Instant
+    val timestamp: String
 )
+
+@Serializable
+data class OutgoingMessage(
+    val chatId: String,
+    val sender: SenderRef,
+    val content: String
+)
+
+@Serializable
+data class SenderRef(val id: String)
