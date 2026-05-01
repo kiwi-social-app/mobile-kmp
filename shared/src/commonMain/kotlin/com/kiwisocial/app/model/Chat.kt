@@ -8,3 +8,6 @@ data class Chat(
     val messages: List<Message>,
     val participants: List<User>
 )
+
+@Serializable
+data class StartChatRequest(val participantIds: List<String>)

@@ -64,4 +64,10 @@ class UserDataSource {
             setBody(userUpdate)
         }.body()
     }
+
+    suspend fun getAllUsers(): List<User> {
+        return client.get(userUrl) {
+            getAuthToken()?.let { bearerAuth(it) }
+        }.body()
+    }
 }

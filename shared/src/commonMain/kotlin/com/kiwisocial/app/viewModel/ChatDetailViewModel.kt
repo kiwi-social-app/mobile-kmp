@@ -27,14 +27,14 @@ class ChatDetailViewModel(
 ) {
     private val chatDataSource = ChatDataSource()
 
-    private val _chats = MutableStateFlow<List<Chat>>(emptyList())
-    val chats: StateFlow<List<Chat>> = _chats.asStateFlow()
-
-    private val _selectedChatId = MutableStateFlow<String?>(null)
-    val selectedChatId: StateFlow<String?> = _selectedChatId.asStateFlow()
-
     val messages: StateFlow<List<Message>> = flow {
-        val history = chatDataSource.getMessagesByChatId(chatId)
+        val history = try {
+            chatDataSource.getMessagesByChatId(chatId)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(emptyList())
+            return@flow
+        }
         emit(history)
         try {
             wsChatDataSource.subscribeToChat(chatId)
@@ -46,7 +46,6 @@ class ChatDetailViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun sendMessage(content: String) {
-        val chatId = _selectedChatId.value ?: return
         val userId = Firebase.auth.currentUser?.uid ?: return
         viewModelScope.launch {
             try {
