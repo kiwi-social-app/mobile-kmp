@@ -29,6 +29,7 @@ import com.kiwisocial.app.ui.screens.home.HomeScreen
 import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
 import com.kiwisocial.app.ui.screens.savedPosts.SavedPostsScreen
+import com.kiwisocial.app.ui.screens.search.SearchScreen
 import com.kiwisocial.app.ui.screens.signup.SignupScreen
 import com.kiwisocial.app.viewModel.AuthViewModel
 import com.kiwisocial.app.viewModel.ChatDetailViewModel
@@ -107,6 +108,9 @@ fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource)
                 },
                 currentUserId = currentUserId ?: return@composable
             )
+            }
+            composable("search"){
+                SearchScreen()
             }
             composable("saved_posts"){
                 SavedPostsScreen(
