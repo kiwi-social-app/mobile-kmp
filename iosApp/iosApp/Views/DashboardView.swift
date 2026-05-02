@@ -1,6 +1,15 @@
 import SwiftUI
+import shared
 
 struct DashboardView: View {
+    let authRepository: AuthRepository
+    private let viewModel: ProfileViewModel
+    
+    init(authRepository: AuthRepository){
+        self.viewModel = ProfileViewModel(userId: nil)
+        self.authRepository = authRepository
+    }
+    
 //    @StateObject var userViewModel = UserViewModel()
 //    @StateObject var authViewModel = AuthViewModel()
     
@@ -41,5 +50,8 @@ struct DashboardView: View {
 }
 
 #Preview {
-    DashboardView()
+    DashboardView(authRepository: AuthRepository(
+        googleSignInProvider: GoogleSignInProvider(),
+                      userDataSource: UserDataSource()
+    ))
 }

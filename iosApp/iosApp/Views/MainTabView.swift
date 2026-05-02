@@ -1,6 +1,11 @@
 import SwiftUI
+import shared
 
 struct MainTabView: View {
+    let authRepository: AuthRepository
+    let wsChatDataSource: WsChatDataSource
+    let onSignOut: () -> Void
+    
     var body: some View {
         TabView {
             NavigationStack {
@@ -11,14 +16,14 @@ struct MainTabView: View {
             }
 
             NavigationStack {
-                ChatView()
+                ChatListView(wsChatDataSource: wsChatDataSource)
             }
             .tabItem {
                 Label("Chats", systemImage: "bubble.left")
             }
 
             NavigationStack {
-                DashboardView()
+                DashboardView(authRepository: authRepository)
             }
             .tabItem {
                 Label("Account", systemImage: "person.crop.circle")

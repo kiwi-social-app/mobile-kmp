@@ -3,9 +3,15 @@ import shared
 
 
 struct LoginView: View {
-    private let viewModel = LoginViewModel()
-    
     var onLoginSuccess: () -> Void
+    private let viewModel: LoginViewModel
+    
+    
+    init(authRepository: AuthRepository, onLoginSuccess: @escaping () -> Void) {
+        self.onLoginSuccess = onLoginSuccess
+        self.viewModel = LoginViewModel(authRepository: authRepository)
+    }
+              
     
     var body: some View {
         Observing(viewModel.email, viewModel.password, viewModel.isLoading){
@@ -38,5 +44,11 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView(onLoginSuccess: {})
+    LoginView(
+              authRepository: AuthRepository(
+        googleSignInProvider: GoogleSignInProvider(),
+                      userDataSource: UserDataSource()
+                  ),
+              onLoginSuccess: {},
+    )
 }

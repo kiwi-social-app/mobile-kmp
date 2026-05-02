@@ -1,11 +1,13 @@
 import SwiftUI
+import shared
 
-struct ChatView: View {
+struct ChatDetailView: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    ChatView()
+    ChatDetailView()
 }
+

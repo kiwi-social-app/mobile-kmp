@@ -3,14 +3,23 @@ import shared
 
 struct ContentView: View {
     @State private var isLoggedIn: Bool = false
-    @State private var showContent = false
+    @State private var authViewModel = AuthViewModel()
+
+    let authRepository: AuthRepository
+    let wsChatDataSource: WsChatDataSource
     
     var body: some View {
         if isLoggedIn {
-                        MainTabView()
+                        MainTabView(
+                            authRepository: authRepository,
+                            wsChatDataSource: wsChatDataSource,
+                            onSignOut: { authViewModel.signOut() }
+                        )
                         .transition(.opacity)
                     } else {
-                        LoginView(onLoginSuccess: {
+                        LoginView(
+                            authRepository: authRepository,
+                            onLoginSuccess: {
                             withAnimation {
                                 isLoggedIn = true
                             }
@@ -22,6 +31,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        Text("Preview unavailable for ContentView")
     }
 }
