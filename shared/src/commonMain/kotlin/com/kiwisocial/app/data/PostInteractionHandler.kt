@@ -1,6 +1,3 @@
 package com.kiwisocial.app.data
 
-class PostInteractionHandler {
-
-
-}
+class PostInteractionHandler

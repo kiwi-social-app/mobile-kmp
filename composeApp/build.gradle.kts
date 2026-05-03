@@ -10,6 +10,14 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.ktlint)
+}
+
+ktlint {
+    android.set(true)
+    filter {
+        exclude { it.file.path.contains("/build/") }
+    }
 }
 
 kotlin {

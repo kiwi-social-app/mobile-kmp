@@ -56,7 +56,7 @@ fun PostDetailScreen(
     postDetailViewModel: PostDetailViewModel,
     onBack: () -> Unit,
     onAuthorClick: (String) -> Unit,
-    onPostDeleted: () -> Unit = {}
+    onPostDeleted: () -> Unit = {},
 ) {
     val uiState by postDetailViewModel.uiState.collectAsStateWithLifecycle()
     val isAuthor = (uiState as? PostDetailState.Success)?.let {
@@ -82,7 +82,7 @@ fun PostDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
                 },
@@ -94,26 +94,26 @@ fun PostDetailScreen(
                             }
                             DropdownMenu(
                                 expanded = showMenu,
-                                onDismissRequest = { showMenu = false }
+                                onDismissRequest = { showMenu = false },
                             ) {
                                 DropdownMenuItem(
                                     text = { Text("Edit") },
                                     onClick = {
                                         showMenu = false
                                         postDetailViewModel.setEditing(true)
-                                    }
+                                    },
                                 )
                                 DropdownMenuItem(
                                     text = { Text("Delete") },
                                     onClick = {
                                         showMenu = false
                                         showDeleteDialog = true
-                                    }
+                                    },
                                 )
                             }
                         }
                     }
-                }
+                },
             )
         },
         bottomBar = {
@@ -122,14 +122,14 @@ fun PostDetailScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
                     value = commentText,
                     onValueChange = { commentText = it },
                     placeholder = { Text("Add a comment…") },
                     modifier = Modifier.weight(1f),
-                    maxLines = 3
+                    maxLines = 3,
                 )
                 IconButton(
                     onClick = {
@@ -137,21 +137,21 @@ fun PostDetailScreen(
                             postDetailViewModel.createComment(commentText)
                             commentText = ""
                         }
-                    }
+                    },
                 ) {
                     Icon(
                         imageVector = Icons.Default.Send,
-                        contentDescription = "Send"
+                        contentDescription = "Send",
                     )
                 }
             }
-        }
+        },
     ) { paddingValues ->
         when (val state = uiState) {
             is PostDetailState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize().padding(paddingValues),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator()
                 }
@@ -160,11 +160,11 @@ fun PostDetailScreen(
             is PostDetailState.Error -> {
                 Box(
                     modifier = Modifier.fillMaxSize().padding(paddingValues),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = state.message,
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
                     )
                 }
             }
@@ -175,7 +175,7 @@ fun PostDetailScreen(
                         .fillMaxSize()
                         .padding(paddingValues)
                         .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     item { Spacer(modifier = Modifier.height(4.dp)) }
 
@@ -185,7 +185,7 @@ fun PostDetailScreen(
                             isEditing = state.isEditing,
                             onAuthorClick = { onAuthorClick(state.post.author.id) },
                             onSave = { newBody -> postDetailViewModel.updatePost(newBody) },
-                            onCancel = { postDetailViewModel.setEditing(false) }
+                            onCancel = { postDetailViewModel.setEditing(false) },
                         )
                     }
 
@@ -194,14 +194,14 @@ fun PostDetailScreen(
                         Text(
                             text = "${state.comments.size} Comments",
                             style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            modifier = Modifier.padding(vertical = 4.dp),
                         )
                     }
 
                     items(state.comments) { comment ->
                         CommentItem(
                             comment = comment,
-                            onAuthorClick = { onAuthorClick(comment.author.id) }
+                            onAuthorClick = { onAuthorClick(comment.author.id) },
                         )
                     }
 
@@ -226,7 +226,7 @@ fun PostDetailScreen(
                 TextButton(onClick = { showDeleteDialog = false }) {
                     Text("Cancel")
                 }
-            }
+            },
         )
     }
 }
@@ -237,7 +237,7 @@ private fun PostDetailCard(
     isEditing: Boolean,
     onAuthorClick: () -> Unit,
     onSave: (String) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     var editBody by remember(post.id, isEditing) { mutableStateOf(post.body) }
 
@@ -247,7 +247,7 @@ private fun PostDetailCard(
                 Text(
                     text = it,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { onAuthorClick() }
+                    modifier = Modifier.clickable { onAuthorClick() },
                 )
                 Spacer(modifier = Modifier.height(4.dp))
             }
@@ -256,13 +256,13 @@ private fun PostDetailCard(
                     value = editBody,
                     onValueChange = { editBody = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Post body") }
+                    label = { Text("Post body") },
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
                         onClick = { onSave(editBody) },
-                        enabled = editBody.isNotBlank()
+                        enabled = editBody.isNotBlank(),
                     ) { Text("Save") }
                     OutlinedButton(onClick = onCancel) { Text("Cancel") }
                 }
@@ -273,7 +273,7 @@ private fun PostDetailCard(
             Text(
                 text = post.createdAt,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -288,7 +288,7 @@ private fun CommentItem(comment: Comment, onAuthorClick: () -> Unit) {
                     text = it,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.clickable { onAuthorClick() }
+                    modifier = Modifier.clickable { onAuthorClick() },
                 )
                 Spacer(modifier = Modifier.height(2.dp))
             }

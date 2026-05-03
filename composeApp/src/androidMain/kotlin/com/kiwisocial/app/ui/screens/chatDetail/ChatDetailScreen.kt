@@ -40,12 +40,10 @@ import com.kiwisocial.app.viewModel.ChatDetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatDetailScreen(viewModel: ChatDetailViewModel, currentUserId: String, onBack: () -> Unit
-) {
+fun ChatDetailScreen(viewModel: ChatDetailViewModel, currentUserId: String, onBack: () -> Unit) {
     var draft by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val messages by viewModel.messages.collectAsStateWithLifecycle()
-
 
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
@@ -58,65 +56,67 @@ fun ChatDetailScreen(viewModel: ChatDetailViewModel, currentUserId: String, onBa
             TopAppBar(
                 title = { Text("Chat") },
                 navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                        }
-                }
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                    }
+                },
             )
-        }
-    ){
+        },
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    reverseLayout = true,
-                ) {
-                    items(messages.asReversed(), key = { it.id }) { message ->
-                        MessageBubble(
-                            message = message,
-                            isMine = message.sender.id == currentUserId,
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    OutlinedTextField(
-                        value = draft,
-                        onValueChange = { draft = it },
-                        modifier = Modifier.weight(1f),
-                        placeholder = { Text("Message") },
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                reverseLayout = true,
+            ) {
+                items(messages.asReversed(), key = { it.id }) { message ->
+                    MessageBubble(
+                        message = message,
+                        isMine = message.sender.id == currentUserId,
                     )
-                    IconButton(
-                        onClick = {
-                            if (draft.isNotBlank()) {
-                                viewModel.sendMessage(draft)
-                                draft = ""
-                            }
-                        },
-                        enabled = draft.isNotBlank(),
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
-                    }
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                OutlinedTextField(
+                    value = draft,
+                    onValueChange = { draft = it },
+                    modifier = Modifier.weight(1f),
+                    placeholder = { Text("Message") },
+                )
+                IconButton(
+                    onClick = {
+                        if (draft.isNotBlank()) {
+                            viewModel.sendMessage(draft)
+                            draft = ""
+                        }
+                    },
+                    enabled = draft.isNotBlank(),
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
                 }
             }
         }
-
     }
+}
 
 @Composable
 private fun MessageBubble(message: Message, isMine: Boolean) {
     val arrangement = if (isMine) Arrangement.End else Arrangement.Start
     val bubbleColor =
-        if (isMine) MaterialTheme.colorScheme.primaryContainer
-        else MaterialTheme.colorScheme.surfaceVariant
+        if (isMine) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        }
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = arrangement,

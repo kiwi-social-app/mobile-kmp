@@ -16,7 +16,7 @@ class AuthViewModel : ViewModel() {
         Firebase.auth.authStateChanged.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = Firebase.auth.currentUser
+            initialValue = Firebase.auth.currentUser,
         )
 
     fun signOut() {

@@ -26,9 +26,11 @@ class CommentDataSource {
 
     private val client = HttpClient {
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                },
+            )
         }
         install(Logging) {
             logger = Logger.SIMPLE
@@ -38,22 +40,16 @@ class CommentDataSource {
 
     private val commentsUrl = "$baseUrl/api/comments"
 
-    private suspend fun getAuthToken(): String? {
-        return Firebase.auth.currentUser?.getIdToken(false)
-    }
+    private suspend fun getAuthToken(): String? = Firebase.auth.currentUser?.getIdToken(false)
 
-    suspend fun getCommentsByPostId(postId: String): List<Comment>{
-        return client.get("$commentsUrl/$postId"){
-            getAuthToken()?.let { bearerAuth(it) }
-        }.body()
-    }
+    suspend fun getCommentsByPostId(postId: String): List<Comment> = client.get("$commentsUrl/$postId") {
+        getAuthToken()?.let { bearerAuth(it) }
+    }.body()
 
-    suspend fun createComment(postId: String, createComment: CreateComment): Comment{
-        return client.post(commentsUrl) {
-            contentType(ContentType.Application.Json)
-            getAuthToken()?.let { bearerAuth(it) }
-            parameter("postId", postId)
-            setBody(createComment)
-        }.body()
-    }
+    suspend fun createComment(postId: String, createComment: CreateComment): Comment = client.post(commentsUrl) {
+        contentType(ContentType.Application.Json)
+        getAuthToken()?.let { bearerAuth(it) }
+        parameter("postId", postId)
+        setBody(createComment)
+    }.body()
 }

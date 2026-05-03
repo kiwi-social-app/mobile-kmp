@@ -27,9 +27,11 @@ class UserDataSource {
     private val client = HttpClient {
         expectSuccess = true
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                },
+            )
         }
         install(Logging) {
             logger = Logger.SIMPLE
@@ -39,35 +41,25 @@ class UserDataSource {
 
     private val userUrl = "$baseUrl/api/users"
 
-    private suspend fun getAuthToken(): String? {
-        return Firebase.auth.currentUser?.getIdToken(false)
-    }
+    private suspend fun getAuthToken(): String? = Firebase.auth.currentUser?.getIdToken(false)
 
-    suspend fun getUserById(id: String): User {
-        return client.get("$userUrl/$id") {
-            getAuthToken()?.let { bearerAuth(it) }
-        }.body()
-    }
+    suspend fun getUserById(id: String): User = client.get("$userUrl/$id") {
+        getAuthToken()?.let { bearerAuth(it) }
+    }.body()
 
-    suspend fun createUser(uid: String, email: String): User {
-        return client.post(userUrl) {
-            contentType(ContentType.Application.Json)
-            getAuthToken()?.let { bearerAuth(it) }
-            setBody(GoogleAuthUser(uid = uid, email = email))
-        }.body()
-    }
+    suspend fun createUser(uid: String, email: String): User = client.post(userUrl) {
+        contentType(ContentType.Application.Json)
+        getAuthToken()?.let { bearerAuth(it) }
+        setBody(GoogleAuthUser(uid = uid, email = email))
+    }.body()
 
-    suspend fun updateUser(userId: String, userUpdate: UserUpdate): User {
-        return client.put("$userUrl/$userId") {
-            contentType(ContentType.Application.Json)
-            getAuthToken()?.let { bearerAuth(it) }
-            setBody(userUpdate)
-        }.body()
-    }
+    suspend fun updateUser(userId: String, userUpdate: UserUpdate): User = client.put("$userUrl/$userId") {
+        contentType(ContentType.Application.Json)
+        getAuthToken()?.let { bearerAuth(it) }
+        setBody(userUpdate)
+    }.body()
 
-    suspend fun getAllUsers(): List<User> {
-        return client.get(userUrl) {
-            getAuthToken()?.let { bearerAuth(it) }
-        }.body()
-    }
+    suspend fun getAllUsers(): List<User> = client.get(userUrl) {
+        getAuthToken()?.let { bearerAuth(it) }
+    }.body()
 }

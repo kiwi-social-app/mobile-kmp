@@ -10,9 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SignupViewModel(
-    private val authRepository: AuthRepository,
-) : ViewModel() {
+class SignupViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email.asStateFlow()

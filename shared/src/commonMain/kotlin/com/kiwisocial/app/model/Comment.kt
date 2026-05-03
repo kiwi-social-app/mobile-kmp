@@ -9,11 +9,7 @@ data class Comment(
     val createdAt: String,
     val updatedAt: String?,
     val author: UserBasic,
-    ) {
-
-}
+)
 
 @Serializable
-data class CreateComment(
-    val body: String
-)
+data class CreateComment(val body: String)

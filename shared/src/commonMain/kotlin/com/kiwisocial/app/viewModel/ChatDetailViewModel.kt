@@ -4,27 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kiwisocial.app.data.ChatDataSource
 import com.kiwisocial.app.data.WsChatDataSource
-import com.kiwisocial.app.model.Chat
 import com.kiwisocial.app.model.Message
 import com.kiwisocial.app.model.OutgoingMessage
 import com.kiwisocial.app.model.SenderRef
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.collections.emptyList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
 
-class ChatDetailViewModel(
-    private val chatId: String,
-    private val wsChatDataSource: WsChatDataSource
-): ViewModel(
-) {
+class ChatDetailViewModel(private val chatId: String, private val wsChatDataSource: WsChatDataSource) : ViewModel() {
     private val chatDataSource = ChatDataSource()
 
     val messages: StateFlow<List<Message>> = flow {
@@ -42,7 +35,9 @@ class ChatDetailViewModel(
                     if (acc.any { it.id == m.id }) acc else acc + m
                 }
                 .collect { emit(it) }
-        } catch (e: Exception) { e.printStackTrace() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun sendMessage(content: String) {
@@ -50,7 +45,7 @@ class ChatDetailViewModel(
         viewModelScope.launch {
             try {
                 wsChatDataSource.sendMessage(
-                    OutgoingMessage(chatId, SenderRef(userId), content)
+                    OutgoingMessage(chatId, SenderRef(userId), content),
                 )
             } catch (e: Exception) {
                 e.printStackTrace()

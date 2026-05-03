@@ -2,8 +2,8 @@
 
 package com.kiwisocial.app.model
 
-import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class Post(
@@ -16,14 +16,10 @@ data class Post(
     val favoritedBy: List<String>,
     val likedByUsers: List<String>,
     val dislikedByUsers: List<String>,
-    )
-
-@Serializable
-data class CreatePost(
-    val body: String,
 )
 
 @Serializable
-data class UpdatePost(
-    val body: String,
-)
+data class CreatePost(val body: String)
+
+@Serializable
+data class UpdatePost(val body: String)

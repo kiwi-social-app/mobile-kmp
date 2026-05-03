@@ -31,11 +31,7 @@ import com.kiwisocial.app.viewModel.SignupViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignupScreen(
-    onNavigateToLogin: () -> Unit,
-    onSignupSuccess: () -> Unit,
-    viewModel: SignupViewModel,
-) {
+fun SignupScreen(onNavigateToLogin: () -> Unit, onSignupSuccess: () -> Unit, viewModel: SignupViewModel) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -48,7 +44,7 @@ fun SignupScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -56,13 +52,13 @@ fun SignupScreen(
                 .padding(padding)
                 .padding(32.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TextField(
                 value = email,
                 onValueChange = { viewModel.onEmailChange(it) },
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -72,7 +68,7 @@ fun SignupScreen(
                 onValueChange = { viewModel.onPasswordChange(it) },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -82,14 +78,14 @@ fun SignupScreen(
                     onClick = {
                         viewModel.signUp(email, password, onSignupSuccess)
                     },
-                    enabled = !isLoading
+                    enabled = !isLoading,
                 ) {
                     Text(if (isLoading) "Signing up..." else "Signup")
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 TextButton(
                     onClick = onNavigateToLogin,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text("Already have an account? Log in")
                 }

@@ -30,11 +30,7 @@ import com.kiwisocial.app.viewModel.LoginViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onNavigateToSignup: () -> Unit,
-    viewModel: LoginViewModel,
-) {
+fun LoginScreen(onLoginSuccess: () -> Unit, onNavigateToSignup: () -> Unit, viewModel: LoginViewModel) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -47,7 +43,7 @@ fun LoginScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -55,13 +51,13 @@ fun LoginScreen(
                 .padding(padding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TextField(
                 value = email,
                 onValueChange = { viewModel.onEmailChange(it) },
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -71,7 +67,7 @@ fun LoginScreen(
                 onValueChange = { viewModel.onPasswordChange(it) },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -109,7 +105,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.width(16.dp))
             TextButton(
                 onClick = onNavigateToSignup,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Don't have an account? Sign up")
             }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SavedPostsViewModel: ViewModel() {
+class SavedPostsViewModel : ViewModel() {
     private val postDataSource = PostDataSource()
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
@@ -20,25 +20,32 @@ class SavedPostsViewModel: ViewModel() {
 
     fun fetchSavedPosts() {
         viewModelScope.launch {
-            try{
+            try {
                 _posts.value = postDataSource.getFavoritePosts()
-            }
-            catch(e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-
-    fun addLike(postId: String){
+    fun addLike(postId: String) {
         val userId = currentUser?.uid ?: return
 
         viewModelScope.launch {
-            try{
+            try {
                 postDataSource.addLike(postId)
-                _posts.value = _posts.value.map {
-                        post ->
-                    if(post.id == postId) post.copy(likedByUsers = post.likedByUsers + userId, dislikedByUsers = post.dislikedByUsers - userId) else post
+                _posts.value = _posts.value.map { post ->
+                    if (post.id ==
+                        postId
+                    ) {
+                        post.copy(
+                            likedByUsers = post.likedByUsers + userId,
+                            dislikedByUsers =
+                            post.dislikedByUsers - userId,
+                        )
+                    } else {
+                        post
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -46,15 +53,14 @@ class SavedPostsViewModel: ViewModel() {
         }
     }
 
-    fun removeLike(postId: String){
+    fun removeLike(postId: String) {
         val userId = currentUser?.uid ?: return
 
         viewModelScope.launch {
-            try{
+            try {
                 postDataSource.removeLike(postId)
-                _posts.value = _posts.value.map {
-                        post ->
-                    if(post.id == postId) post.copy(likedByUsers = post.likedByUsers - userId) else post
+                _posts.value = _posts.value.map { post ->
+                    if (post.id == postId) post.copy(likedByUsers = post.likedByUsers - userId) else post
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -62,15 +68,24 @@ class SavedPostsViewModel: ViewModel() {
         }
     }
 
-    fun addDislike(postId: String){
+    fun addDislike(postId: String) {
         val userId = currentUser?.uid ?: return
 
         viewModelScope.launch {
-            try{
+            try {
                 postDataSource.addDislike(postId)
-                _posts.value = _posts.value.map {
-                        post ->
-                    if(post.id == postId) post.copy(likedByUsers = post.likedByUsers - userId, dislikedByUsers = post.dislikedByUsers + userId) else post
+                _posts.value = _posts.value.map { post ->
+                    if (post.id ==
+                        postId
+                    ) {
+                        post.copy(
+                            likedByUsers = post.likedByUsers - userId,
+                            dislikedByUsers =
+                            post.dislikedByUsers + userId,
+                        )
+                    } else {
+                        post
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -78,15 +93,14 @@ class SavedPostsViewModel: ViewModel() {
         }
     }
 
-    fun removeDislike(postId: String){
+    fun removeDislike(postId: String) {
         val userId = currentUser?.uid ?: return
 
         viewModelScope.launch {
-            try{
+            try {
                 postDataSource.removeDislike(postId)
-                _posts.value = _posts.value.map {
-                        post ->
-                    if(post.id == postId) post.copy(dislikedByUsers = post.dislikedByUsers - userId) else post
+                _posts.value = _posts.value.map { post ->
+                    if (post.id == postId) post.copy(dislikedByUsers = post.dislikedByUsers - userId) else post
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -94,15 +108,14 @@ class SavedPostsViewModel: ViewModel() {
         }
     }
 
-    fun favoritePost(postId: String){
+    fun favoritePost(postId: String) {
         val userId = currentUser?.uid ?: return
 
         viewModelScope.launch {
-            try{
+            try {
                 postDataSource.favoritePost(postId)
-                _posts.value = _posts.value.map {
-                        post ->
-                    if(post.id == postId) post.copy(favoritedBy = post.favoritedBy + userId) else post
+                _posts.value = _posts.value.map { post ->
+                    if (post.id == postId) post.copy(favoritedBy = post.favoritedBy + userId) else post
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -110,15 +123,14 @@ class SavedPostsViewModel: ViewModel() {
         }
     }
 
-    fun unFavoritePost(postId: String){
+    fun unFavoritePost(postId: String) {
         val userId = currentUser?.uid ?: return
 
         viewModelScope.launch {
-            try{
+            try {
                 postDataSource.unFavoritePost(postId)
-                _posts.value = _posts.value.map {
-                        post ->
-                    if(post.id == postId) post.copy(favoritedBy = post.favoritedBy - userId) else post
+                _posts.value = _posts.value.map { post ->
+                    if (post.id == postId) post.copy(favoritedBy = post.favoritedBy - userId) else post
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

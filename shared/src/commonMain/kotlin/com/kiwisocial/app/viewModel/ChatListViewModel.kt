@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ChatListViewModel: ViewModel() {
+class ChatListViewModel : ViewModel() {
     private val chatDataSource = ChatDataSource()
     private val userDataSource = UserDataSource()
 
@@ -40,11 +40,11 @@ class ChatListViewModel: ViewModel() {
 
     fun fetchAvailableUsers() {
         viewModelScope.launch {
-            try{
+            try {
                 val me = Firebase.auth.currentUser?.uid
                 _availableUsers.value = userDataSource.getAllUsers()
-                    .filter { it.id != me}
-            }catch (e: Exception) {
+                    .filter { it.id != me }
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

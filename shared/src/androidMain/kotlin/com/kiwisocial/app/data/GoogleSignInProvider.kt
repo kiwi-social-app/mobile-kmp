@@ -9,10 +9,7 @@ import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import java.security.SecureRandom
 
-actual class GoogleSignInProvider(
-    private val activityContext: Context,
-    private val webClientId: String,
-) {
+actual class GoogleSignInProvider(private val activityContext: Context, private val webClientId: String) {
     private val credentialManager = CredentialManager.create(activityContext)
 
     actual suspend fun getIdToken(): String {
@@ -29,7 +26,7 @@ actual class GoogleSignInProvider(
 
         check(
             credential is CustomCredential &&
-                credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL,
         ) { "Unexpected credential type: ${credential::class.simpleName}" }
 
         return GoogleIdTokenCredential.createFrom(credential.data).idToken

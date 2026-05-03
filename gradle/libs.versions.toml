@@ -17,6 +17,7 @@ googleid = "1.2.0"
 kotlinxSerializationProtobuf = "1.11.0"
 krossbowWebsocketBuiltin = "9.3.0"
 skie = "0.10.11"
+ktlint = "14.2.0"
 
 kotlin = "2.3.20"
 kotlinSerialization = "2.3.20"
@@ -69,3 +70,4 @@ googleServices = {id ="com.google.gms.google-services", version.ref = "google-se
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
+ktlint = {id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint"}

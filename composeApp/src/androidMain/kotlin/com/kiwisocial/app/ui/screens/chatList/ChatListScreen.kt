@@ -24,7 +24,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -41,16 +40,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kiwisocial.app.data.UserDataSource
 import com.kiwisocial.app.model.User
 import com.kiwisocial.app.viewModel.ChatListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatListScreen(
-    viewModel: ChatListViewModel,
-    onChatClick: (String) -> Unit,
-    ) {
+fun ChatListScreen(viewModel: ChatListViewModel, onChatClick: (String) -> Unit) {
     val chats by viewModel.chats.collectAsStateWithLifecycle()
     var showStartNewChatDialog by remember { mutableStateOf(false) }
     val availableUsers by viewModel.availableUsers.collectAsStateWithLifecycle()
@@ -65,9 +60,9 @@ fun ChatListScreen(
             FloatingActionButton(onClick = { showStartNewChatDialog = true }) {
                 Icon(Icons.Default.Add, contentDescription = "Start new chat")
             }
-        }
+        },
     ) { paddingValues ->
-        if(chats.isEmpty()) {
+        if (chats.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("No chats yet")
             }
@@ -75,21 +70,21 @@ fun ChatListScreen(
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ){
-            items(chats, key = {it.id}){ chat ->
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(chats, key = { it.id }) { chat ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onChatClick(chat.id) }
-                ){
+                        .clickable { onChatClick(chat.id) },
+                ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = chat.participants.mapNotNull { it.username }.joinToString(", "),
                             fontWeight = FontWeight.Bold,
                         )
                         val last = chat.messages.lastOrNull()
-                        if(last != null) {
+                        if (last != null) {
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(text = last.content, maxLines = 1, style = MaterialTheme.typography.bodyMedium)
                         }
@@ -98,24 +93,22 @@ fun ChatListScreen(
             }
         }
     }
-    if(showStartNewChatDialog){
+    if (showStartNewChatDialog) {
         StartNewChatDialog(
             availableUsers = availableUsers,
             onDismiss = { showStartNewChatDialog = false },
             onConfirm = { content ->
                 viewModel.startChat(content)
                 showStartNewChatDialog = false
-            }
+            },
         )
     }
 }
 
-
 @Composable
 fun StartNewChatDialog(availableUsers: List<User>, onDismiss: () -> Unit, onConfirm: (List<String>) -> Unit) {
-    var content by remember {mutableStateOf("")}
-    val selectedIds = remember {mutableStateListOf<String>()}
-
+    var content by remember { mutableStateOf("") }
+    val selectedIds = remember { mutableStateListOf<String>() }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -128,8 +121,11 @@ fun StartNewChatDialog(availableUsers: List<User>, onDismiss: () -> Unit, onConf
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                if (checked) selectedIds.remove(user.id)
-                                else selectedIds.add(user.id)
+                                if (checked) {
+                                    selectedIds.remove(user.id)
+                                } else {
+                                    selectedIds.add(user.id)
+                                }
                             }
                             .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -153,6 +149,6 @@ fun StartNewChatDialog(availableUsers: List<User>, onDismiss: () -> Unit, onConf
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     )
 }

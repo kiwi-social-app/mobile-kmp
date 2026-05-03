@@ -20,9 +20,9 @@ import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -44,8 +44,8 @@ import com.kiwisocial.app.viewModel.SavedPostsViewModel
 fun SavedPostsScreen(
     savedPostsViewModel: SavedPostsViewModel = viewModel(),
     currentUserId: String,
-    onPostClick: (String) -> Unit
-){
+    onPostClick: (String) -> Unit,
+) {
     val posts by savedPostsViewModel.posts.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -55,44 +55,45 @@ fun SavedPostsScreen(
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Saved Posts") })
-        }
-    ){
-paddingValues -> Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
-        contentAlignment = Alignment.Center
-){
-        if(posts.isEmpty()){
-            CircularProgressIndicator()
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ){
-                items(posts) { post ->
-                    PostItem(post = post, onClick = { onPostClick(post.id) }, currentUserId = currentUserId, savedPostsViewModel)
+        },
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (posts.isEmpty()) {
+                CircularProgressIndicator()
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(posts) { post ->
+                        PostItem(post = post, onClick = {
+                            onPostClick(post.id)
+                        }, currentUserId = currentUserId, savedPostsViewModel)
+                    }
                 }
             }
         }
     }
-    }
-
 }
 
 @Composable
-private fun PostItem(post: Post, onClick: () -> Unit, currentUserId: String?, viewModel: SavedPostsViewModel){
+private fun PostItem(post: Post, onClick: () -> Unit, currentUserId: String?, viewModel: SavedPostsViewModel) {
     val isLiked = currentUserId != null && post.likedByUsers.contains(currentUserId)
     val isDisliked = currentUserId != null && post.dislikedByUsers.contains(currentUserId)
 
-    Card(modifier = Modifier.fillMaxWidth().clickable { onClick() }){
-        Column(modifier = Modifier.padding(16.dp)){
+    Card(modifier = Modifier.fillMaxWidth().clickable { onClick() }) {
+        Column(modifier = Modifier.padding(16.dp)) {
             post.author.username?.let { Text(text = it, fontWeight = FontWeight.Bold) }
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = post.body)
             Row {
-                if(isLiked){
+                if (isLiked) {
                     IconButton(onClick = { viewModel.removeLike(post.id) }) {
                         Icon(Icons.Filled.ThumbUp, contentDescription = "Like", tint = Color.Green)
                     }
@@ -102,7 +103,7 @@ private fun PostItem(post: Post, onClick: () -> Unit, currentUserId: String?, vi
                     }
                 }
 
-                if(isDisliked){
+                if (isDisliked) {
                     IconButton(onClick = { viewModel.removeDislike(post.id) }) {
                         Icon(Icons.Filled.ThumbDown, contentDescription = "Dislike", tint = Color.Red)
                     }

@@ -54,7 +54,7 @@ fun ProfileScreen(
     onSignOut: () -> Unit = {},
     profileViewModel: ProfileViewModel = viewModel(key = "profile-${userId ?: "me"}") {
         ProfileViewModel(userId = userId)
-    }
+    },
 ) {
     val user by profileViewModel.user.collectAsStateWithLifecycle()
     val posts by profileViewModel.posts.collectAsStateWithLifecycle()
@@ -77,7 +77,7 @@ fun ProfileScreen(
                         IconButton(onClick = onBack) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = "Back",
                             )
                         }
                     }
@@ -88,33 +88,33 @@ fun ProfileScreen(
                             IconButton(onClick = { showMenu = true }) {
                                 Icon(
                                     Icons.Default.MoreVert,
-                                    contentDescription = "More options"
+                                    contentDescription = "More options",
                                 )
                             }
                             DropdownMenu(
                                 expanded = showMenu,
-                                onDismissRequest = { showMenu = false }
+                                onDismissRequest = { showMenu = false },
                             ) {
                                 DropdownMenuItem(
                                     text = { Text("Edit profile") },
                                     onClick = {
                                         showMenu = false
                                         profileViewModel.startEditing()
-                                    }
+                                    },
                                 )
                                 DropdownMenuItem(
                                     text = { Text("Sign out") },
                                     onClick = {
                                         showMenu = false
                                         showSignOutDialog = true
-                                    }
+                                    },
                                 )
                             }
                         }
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         val currentUser = user
         if (currentUser == null) {
@@ -122,7 +122,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
@@ -132,7 +132,7 @@ fun ProfileScreen(
                     .fillMaxSize()
                     .padding(paddingValues),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 item {
                     if (isEditing) {
@@ -146,7 +146,7 @@ fun ProfileScreen(
                             onFirstnameChange = profileViewModel::onEditFirstnameChange,
                             onLastnameChange = profileViewModel::onEditLastnameChange,
                             onSave = profileViewModel::saveProfile,
-                            onCancel = profileViewModel::cancelEditing
+                            onCancel = profileViewModel::cancelEditing,
                         )
                     } else {
                         UserInfoCard(currentUser)
@@ -156,14 +156,14 @@ fun ProfileScreen(
                     Text(
                         text = "Posts",
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = 8.dp),
                     )
                 }
                 if (posts.isEmpty()) {
                     item {
                         Text(
                             text = "No posts yet",
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 } else {
@@ -190,7 +190,7 @@ fun ProfileScreen(
                 TextButton(onClick = { showSignOutDialog = false }) {
                     Text("Cancel")
                 }
-            }
+            },
         )
     }
 }
@@ -206,7 +206,7 @@ private fun UserInfoCard(user: User) {
             Text(
                 text = user.username ?: "(no username)",
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = user.email, style = MaterialTheme.typography.bodyMedium)
@@ -229,45 +229,45 @@ private fun EditUserInfoCard(
     onFirstnameChange: (String) -> Unit,
     onLastnameChange: (String) -> Unit,
     onSave: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             OutlinedTextField(
                 value = username,
                 onValueChange = onUsernameChange,
                 label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
             )
             OutlinedTextField(
                 value = email,
                 onValueChange = onEmailChange,
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
             )
             OutlinedTextField(
                 value = firstname,
                 onValueChange = onFirstnameChange,
                 label = { Text("First name") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
             )
             OutlinedTextField(
                 value = lastname,
                 onValueChange = onLastnameChange,
                 label = { Text("Last name") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     onClick = onSave,
-                    enabled = email.isNotBlank()
+                    enabled = email.isNotBlank(),
                 ) { Text("Save") }
                 OutlinedButton(onClick = onCancel) { Text("Cancel") }
             }

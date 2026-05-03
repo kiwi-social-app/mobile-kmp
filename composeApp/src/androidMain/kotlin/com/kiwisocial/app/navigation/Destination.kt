@@ -8,12 +8,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 
-enum class Destination(
-    val route: String,
-    val label: String,
-    val icon: ImageVector,
-    val contentDescription: String
-) {
+enum class Destination(val route: String, val label: String, val icon: ImageVector, val contentDescription: String) {
     HOME("home", "Home", Icons.Default.Home, "Home"),
     CHAT("chat", "Chat", Icons.Default.ChatBubble, "Chat"),
     SEARCH("search", "Search", Icons.Default.Search, "Search"),

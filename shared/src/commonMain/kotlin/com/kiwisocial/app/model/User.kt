@@ -12,19 +12,11 @@ data class User(
     val chats: List<Chat>? = null,
     val favorites: List<String> = emptyList(),
     val likedPosts: List<String> = emptyList(),
-    val dislikedPosts: List<String> = emptyList()
+    val dislikedPosts: List<String> = emptyList(),
 )
 
 @Serializable
-data class UserUpdate(
-    val username: String?,
-    val email: String,
-    val firstname: String?,
-    val lastname: String?
-)
+data class UserUpdate(val username: String?, val email: String, val firstname: String?, val lastname: String?)
 
 @Serializable
-data class GoogleAuthUser(
-    val uid: String,
-    val email: String,
-)
+data class GoogleAuthUser(val uid: String, val email: String)

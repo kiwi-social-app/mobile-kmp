@@ -4,5 +4,4 @@ actual class GoogleSignInProvider {
     actual suspend fun getIdToken(): String {
         TODO("Not yet implemented")
     }
-
 }

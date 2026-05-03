@@ -22,9 +22,11 @@ class SearchDataSource {
     private val client = HttpClient {
         expectSuccess = true
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                },
+            )
         }
         install(Logging) {
             logger = Logger.SIMPLE
@@ -33,14 +35,10 @@ class SearchDataSource {
     }
     private val searchUrl = "$baseUrl/api/search"
 
-    private suspend fun getAuthToken(): String? {
-        return Firebase.auth.currentUser?.getIdToken(false)
-    }
+    private suspend fun getAuthToken(): String? = Firebase.auth.currentUser?.getIdToken(false)
 
-    suspend fun search(query: String): List<SearchResult>{
-        return client.get(searchUrl) {
-            getAuthToken()?.let {bearerAuth(it)}
-            parameter("query", query)
-        }.body()
-    }
+    suspend fun search(query: String): List<SearchResult> = client.get(searchUrl) {
+        getAuthToken()?.let { bearerAuth(it) }
+        parameter("query", query)
+    }.body()
 }

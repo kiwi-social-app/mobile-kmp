@@ -37,7 +37,7 @@ class WsChatDataSource {
                 url = wsUrl,
                 customStompConnectHeaders = token
                     ?.let { mapOf("Authorization" to "Bearer $it") }
-                    ?: emptyMap()
+                    ?: emptyMap(),
             )
             session = rawSession.withTextConversions(json, "application/json;charset=utf-8")
             _connectionState.value = ConnectionState.CONNECTED

@@ -26,9 +26,11 @@ class ChatDataSource {
     private val client = HttpClient {
         expectSuccess = true
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                },
+            )
         }
         install(Logging) {
             logger = Logger.SIMPLE
@@ -38,28 +40,19 @@ class ChatDataSource {
 
     private val chatUrl = "$baseUrl/api/chat"
 
-    private suspend fun getAuthToken(): String? {
-        return Firebase.auth.currentUser?.getIdToken(false)
-    }
+    private suspend fun getAuthToken(): String? = Firebase.auth.currentUser?.getIdToken(false)
 
-    suspend fun getCurrentUserChats(): List<Chat> {
-        return client.get("$chatUrl/user/me"){
-            getAuthToken()?.let{bearerAuth(it)}
-        }.body()
-    }
+    suspend fun getCurrentUserChats(): List<Chat> = client.get("$chatUrl/user/me") {
+        getAuthToken()?.let { bearerAuth(it) }
+    }.body()
 
-    suspend fun startChat(participantIds: List<String>): Chat {
-        return client.post("$chatUrl/start"){
-            contentType(ContentType.Application.Json)
-            getAuthToken()?.let{ bearerAuth(it) }
-            setBody(StartChatRequest(participantIds))
-        }.body()
-    }
+    suspend fun startChat(participantIds: List<String>): Chat = client.post("$chatUrl/start") {
+        contentType(ContentType.Application.Json)
+        getAuthToken()?.let { bearerAuth(it) }
+        setBody(StartChatRequest(participantIds))
+    }.body()
 
-    suspend fun getMessagesByChatId(id: String): List<Message>{
-        return client.get("$chatUrl/messages/$id"){
-            getAuthToken()?.let{ bearerAuth(it) }
-        }.body()
-    }
-
+    suspend fun getMessagesByChatId(id: String): List<Message> = client.get("$chatUrl/messages/$id") {
+        getAuthToken()?.let { bearerAuth(it) }
+    }.body()
 }

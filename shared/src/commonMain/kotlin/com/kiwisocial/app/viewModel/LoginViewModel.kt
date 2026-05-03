@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel(
-    private val authRepository: AuthRepository,
-) : ViewModel() {
+class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email.asStateFlow()

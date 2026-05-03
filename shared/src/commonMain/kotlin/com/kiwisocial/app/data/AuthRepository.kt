@@ -30,10 +30,7 @@ class AuthRepository(
 
     suspend fun signOut() = Firebase.auth.signOut()
 
-    private suspend fun ensureBackendUserExists(
-        result: AuthResult,
-        fallbackEmail: String?,
-    ) {
+    private suspend fun ensureBackendUserExists(result: AuthResult, fallbackEmail: String?) {
         val user = result.user ?: return
         val email = user.email ?: fallbackEmail
             ?: error("Cannot provision backend user without an email")

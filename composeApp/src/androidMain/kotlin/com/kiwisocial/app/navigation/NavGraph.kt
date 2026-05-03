@@ -1,6 +1,5 @@
 package com.kiwisocial.app.navigation
 
-import com.kiwisocial.app.ui.screens.login.LoginScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -26,6 +25,7 @@ import com.kiwisocial.app.data.WsChatDataSource
 import com.kiwisocial.app.ui.screens.chatDetail.ChatDetailScreen
 import com.kiwisocial.app.ui.screens.chatList.ChatListScreen
 import com.kiwisocial.app.ui.screens.home.HomeScreen
+import com.kiwisocial.app.ui.screens.login.LoginScreen
 import com.kiwisocial.app.ui.screens.postDetail.PostDetailScreen
 import com.kiwisocial.app.ui.screens.profile.ProfileScreen
 import com.kiwisocial.app.ui.screens.savedPosts.SavedPostsScreen
@@ -49,7 +49,7 @@ fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource)
     val currentUserId = currentUser?.uid
 
     LaunchedEffect(currentUser, currentRoute) {
-        if(currentUser == null){
+        if (currentUser == null) {
             wsChatDataSource.disconnect()
             if (currentRoute != null && currentRoute != "login" && currentRoute != "signup") {
                 navController.navigate("login") {
@@ -57,33 +57,34 @@ fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource)
                 }
             }
         } else {
-            try {wsChatDataSource.connect()} catch (_: Exception){}
+            try {
+                wsChatDataSource.connect()
+            } catch (_: Exception) {}
         }
-
     }
 
     Scaffold(bottomBar = {
-    if (currentRoute != "login") {
-        NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-            Destination.entries.forEach { destination ->
-                val isSelected = currentRoute == destination.route
-                NavigationBarItem(
-                    selected = isSelected,
-                    onClick = {
-                        navController.navigate(destination.route) {
-                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    icon = { Icon(destination.icon, contentDescription = destination.contentDescription) },
-                    label = { Text(destination.label) }
-                )
+        if (currentRoute != "login") {
+            NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
+                Destination.entries.forEach { destination ->
+                    val isSelected = currentRoute == destination.route
+                    NavigationBarItem(
+                        selected = isSelected,
+                        onClick = {
+                            navController.navigate(destination.route) {
+                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = { Icon(destination.icon, contentDescription = destination.contentDescription) },
+                        label = { Text(destination.label) },
+                    )
+                }
             }
         }
-    }
-}){
-            innerPadding ->  NavHost(navController = navController, startDestination = "login", modifier = Modifier.padding(innerPadding)) {
+    }) { innerPadding ->
+        NavHost(navController = navController, startDestination = "login", modifier = Modifier.padding(innerPadding)) {
             composable("login") {
                 val loginViewModel: LoginViewModel = viewModel {
                     LoginViewModel(authRepository)
@@ -98,26 +99,27 @@ fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource)
                     viewModel = loginViewModel,
                 )
             }
-            composable("home"){
+            composable("home") {
                 HomeScreen(
-                onPostClick = { postId ->
-                    navController.navigate("post_details/$postId")
-                },
-                onAuthorClick = { authorId ->
-                    navController.navigate("profile?userId=$authorId")
-                },
-                currentUserId = currentUserId ?: return@composable
-            )
+                    onPostClick = { postId ->
+                        navController.navigate("post_details/$postId")
+                    },
+                    onAuthorClick = { authorId ->
+                        navController.navigate("profile?userId=$authorId")
+                    },
+                    currentUserId = currentUserId ?: return@composable,
+                )
             }
-            composable("search"){
+            composable("search") {
                 SearchScreen()
             }
-            composable("saved_posts"){
+            composable("saved_posts") {
                 SavedPostsScreen(
                     currentUserId = currentUserId ?: return@composable,
                     onPostClick = { postId ->
-                    navController.navigate("post_details/$postId")
-                })
+                        navController.navigate("post_details/$postId")
+                    },
+                )
             }
             composable("chat") {
                 val chatListViewModel: ChatListViewModel = viewModel { ChatListViewModel() }
@@ -128,48 +130,50 @@ fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource)
                     },
                 )
             }
-        composable(
-            route = "chat/{chatId}",
-            arguments = listOf(navArgument("chatId") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            val chatId = backStackEntry.arguments?.getString("chatId") ?: return@composable
-            val vm: ChatDetailViewModel = viewModel { ChatDetailViewModel(chatId, wsChatDataSource) }
-            ChatDetailScreen(
-                viewModel = vm,
-                currentUserId = currentUserId ?: return@composable,
-                onBack = { navController.popBackStack() },
-            )
-        }
+            composable(
+                route = "chat/{chatId}",
+                arguments = listOf(navArgument("chatId") { type = NavType.StringType }),
+            ) { backStackEntry ->
+                val chatId = backStackEntry.arguments?.getString("chatId") ?: return@composable
+                val vm: ChatDetailViewModel = viewModel { ChatDetailViewModel(chatId, wsChatDataSource) }
+                ChatDetailScreen(
+                    viewModel = vm,
+                    currentUserId = currentUserId ?: return@composable,
+                    onBack = { navController.popBackStack() },
+                )
+            }
             composable(
                 route = "profile?userId={userId}",
-                arguments = listOf(navArgument("userId") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                })
+                arguments = listOf(
+                    navArgument("userId") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                ),
             ) { backStackEntry ->
                 val userId = backStackEntry.arguments?.getString("userId")
                 ProfileScreen(
                     userId = userId,
                     onBack = { navController.popBackStack() },
-                    onSignOut = { authViewModel.signOut() }
+                    onSignOut = { authViewModel.signOut() },
                 )
             }
             composable(
-            route = "post_details/{postId}",
-            arguments = listOf(navArgument("postId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val postId = backStackEntry.arguments?.getString("postId") ?: ""
-            val viewModel: PostDetailViewModel = viewModel {
-                PostDetailViewModel(postId = postId)
-            }
+                route = "post_details/{postId}",
+                arguments = listOf(navArgument("postId") { type = NavType.StringType }),
+            ) { backStackEntry ->
+                val postId = backStackEntry.arguments?.getString("postId") ?: ""
+                val viewModel: PostDetailViewModel = viewModel {
+                    PostDetailViewModel(postId = postId)
+                }
                 PostDetailScreen(
                     postDetailViewModel = viewModel,
                     onBack = { navController.popBackStack() },
                     onAuthorClick = { authorId ->
                         navController.navigate("profile?userId=$authorId")
                     },
-                    onPostDeleted = { navController.popBackStack() }
+                    onPostDeleted = { navController.popBackStack() },
                 )
             }
             composable("signup") {
@@ -186,9 +190,6 @@ fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource)
                     viewModel = signupViewModel,
                 )
             }
-
         }
-
+    }
 }
-}
-

@@ -78,10 +78,18 @@ class ProfileViewModel(private val userId: String? = null) : ViewModel() {
         _isEditing.value = false
     }
 
-    fun onEditUsernameChange(value: String) { _editUsername.value = value }
-    fun onEditEmailChange(value: String) { _editEmail.value = value }
-    fun onEditFirstnameChange(value: String) { _editFirstname.value = value }
-    fun onEditLastnameChange(value: String) { _editLastname.value = value }
+    fun onEditUsernameChange(value: String) {
+        _editUsername.value = value
+    }
+    fun onEditEmailChange(value: String) {
+        _editEmail.value = value
+    }
+    fun onEditFirstnameChange(value: String) {
+        _editFirstname.value = value
+    }
+    fun onEditLastnameChange(value: String) {
+        _editLastname.value = value
+    }
 
     fun saveProfile() {
         val currentUid = Firebase.auth.currentUser?.uid
@@ -95,8 +103,8 @@ class ProfileViewModel(private val userId: String? = null) : ViewModel() {
                         username = _editUsername.value.ifBlank { null },
                         email = _editEmail.value,
                         firstname = _editFirstname.value.ifBlank { null },
-                        lastname = _editLastname.value.ifBlank { null }
-                    )
+                        lastname = _editLastname.value.ifBlank { null },
+                    ),
                 )
                 _user.value = updated
                 _isEditing.value = false

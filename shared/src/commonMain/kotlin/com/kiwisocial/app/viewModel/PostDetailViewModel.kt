@@ -11,13 +11,13 @@ import com.kiwisocial.app.model.UpdatePost
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
+import kotlin.collections.emptyList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
 
 sealed class PostDetailEvent {
     data object PostDeleted : PostDetailEvent()
@@ -29,7 +29,7 @@ sealed class PostDetailState {
         val post: Post,
         val comments: List<Comment> = emptyList(),
         val currentUser: FirebaseUser? = Firebase.auth.currentUser,
-        val isEditing: Boolean = false
+        val isEditing: Boolean = false,
     ) : PostDetailState()
     data class Error(val message: String) : PostDetailState()
 }
@@ -37,8 +37,8 @@ sealed class PostDetailState {
 class PostDetailViewModel(
     private val postId: String,
     private val postDataSource: PostDataSource = PostDataSource(),
-    private val commentDataSource: CommentDataSource = CommentDataSource()
-): ViewModel() {
+    private val commentDataSource: CommentDataSource = CommentDataSource(),
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<PostDetailState>(PostDetailState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -52,37 +52,37 @@ class PostDetailViewModel(
 
     fun fetchData() {
         viewModelScope.launch {
-            try{
+            try {
                 val post = postDataSource.getPostById(postId)
                 val comments = commentDataSource.getCommentsByPostId(postId)
                 _uiState.value = PostDetailState.Success(post, comments)
-            } catch(e: Exception){
+            } catch (e: Exception) {
                 _uiState.value = PostDetailState.Error(e.message ?: "Unknown Error")
                 e.printStackTrace()
             }
         }
     }
 
-    fun createComment(body: String){
+    fun createComment(body: String) {
         val currentState = _uiState.value
         if (currentState !is PostDetailState.Success) return
 
         viewModelScope.launch {
-            try{
+            try {
                 val currentUser = Firebase.auth.currentUser
-                if(currentUser == null){
+                if (currentUser == null) {
                     println("Error: User not authenticated")
                     return@launch
                 }
 
                 val newComment = commentDataSource.createComment(
                     currentState.post.id,
-                    CreateComment(body = body)
+                    CreateComment(body = body),
                 )
                 _uiState.value = currentState.copy(
-                    comments = listOf<Comment>(newComment) + currentState.comments
-                )            }
-            catch(e: Exception){
+                    comments = listOf<Comment>(newComment) + currentState.comments,
+                )
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
