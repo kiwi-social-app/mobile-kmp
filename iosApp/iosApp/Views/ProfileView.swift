@@ -1,7 +1,7 @@
 import SwiftUI
 import shared
 
-struct DashboardView: View {
+struct ProfileView: View {
     let authRepository: AuthRepository
     private let viewModel: ProfileViewModel
     
@@ -11,6 +11,7 @@ struct DashboardView: View {
     }
     
 //    @StateObject var userViewModel = UserViewModel()
+    
 //    @StateObject var authViewModel = AuthViewModel()
     
     var body: some View {
