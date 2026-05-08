@@ -5,7 +5,7 @@ struct MainTabView: View {
     let authRepository: AuthRepository
     let wsChatDataSource: WsChatDataSource
     let onSignOut: () -> Void
-    
+
     var body: some View {
         TabView {
             NavigationStack {
@@ -15,20 +15,20 @@ struct MainTabView: View {
                 Label("Feed", systemImage: "house")
             }
 
-            NavigationStack{
+            NavigationStack {
                 SearchView()
             }
             .tabItem {
-                Label("Search", systemImage: "search")
+                Label("Search", systemImage: "magnifyingglass")
             }
-            
+
             NavigationStack {
                 ChatListView(wsChatDataSource: wsChatDataSource)
             }
             .tabItem {
                 Label("Chats", systemImage: "bubble.left")
             }
-            
+
             NavigationStack {
                 SavedPostsView()
             }

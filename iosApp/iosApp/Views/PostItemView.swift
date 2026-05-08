@@ -8,7 +8,7 @@ struct PostItemView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(post.author.username ?? "Unknown User")
                 .font(.headline)
-            
+
             Text(post.body)
                 .font(.body)
         }

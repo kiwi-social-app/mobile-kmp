@@ -23,7 +23,10 @@ struct CreatePostView: View {
                     Button("Post") {
                         onConfirm(content)
                     }
-                    .disabled(content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(
+                        content.trimmingCharacters(in: .whitespacesAndNewlines)
+                            .isEmpty
+                    )
                 }
             }
         }

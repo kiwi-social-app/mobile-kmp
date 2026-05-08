@@ -62,8 +62,8 @@ fun ChatDetailScreen(viewModel: ChatDetailViewModel, currentUserId: String, onBa
                 },
             )
         },
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+    ) { paddingValues ->
+        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier
