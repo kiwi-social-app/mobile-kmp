@@ -4,84 +4,36 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kiwisocial.app.data.PostDataSource
 import com.kiwisocial.app.data.PostInteractionHandler
-import com.kiwisocial.app.data.SearchDataSource
 import com.kiwisocial.app.model.CreatePost
 import com.kiwisocial.app.model.Post
-import com.kiwisocial.app.model.SearchResult
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlin.collections.emptyList
-import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
     private val postDataSource = PostDataSource()
-    private val searchDataSource = SearchDataSource()
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     val posts: StateFlow<List<Post>> = _posts.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     val interactions = PostInteractionHandler(viewModelScope, _posts, postDataSource)
-
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val searchResults: StateFlow<List<SearchResult>> = _searchQuery
-        .debounce(300.milliseconds)
-        .distinctUntilChanged()
-        .mapLatest { query ->
-            if (query.isBlank()) {
-                emptyList()
-            } else {
-                try {
-                    searchDataSource.search(query)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    emptyList()
-                }
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList(),
-        )
-
-    val displayedPosts: StateFlow<List<Post>> = combine(_posts, searchResults) { posts, results ->
-        if (results.isEmpty()) {
-            posts
-        } else {
-            val byId = posts.associateBy { it.id }
-            results.mapNotNull { it.postId?.let(byId::get) }
-        }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList(),
-    )
-
-    fun onQueryChange(q: String) {
-        _searchQuery.value = q
-    }
 
     fun fetchPosts() {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 _posts.value = postDataSource.getAllPosts()
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -104,11 +56,4 @@ class HomeViewModel : ViewModel() {
             }
         }
     }
-
-    fun addLike(postId: String) = interactions.addLike(postId)
-    fun removeLike(postId: String) = interactions.removeLike(postId)
-    fun addDislike(postId: String) = interactions.addDislike(postId)
-    fun removeDislike(postId: String) = interactions.removeDislike(postId)
-    fun favoritePost(postId: String) = interactions.favoritePost(postId)
-    fun unFavoritePost(postId: String) = interactions.unFavoritePost(postId)
 }

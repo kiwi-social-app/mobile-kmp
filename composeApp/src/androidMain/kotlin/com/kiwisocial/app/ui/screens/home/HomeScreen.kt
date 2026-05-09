@@ -47,28 +47,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kiwisocial.app.data.PostInteractionHandler
 import com.kiwisocial.app.model.Post
 import com.kiwisocial.app.viewModel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel(),
+    viewModel: HomeViewModel = viewModel(),
     currentUserId: String,
     onPostClick: (String) -> Unit,
     onAuthorClick: (String) -> Unit,
 ) {
-    val posts by homeViewModel.displayedPosts.collectAsStateWithLifecycle()
+    val posts by viewModel.posts.collectAsStateWithLifecycle()
     var showCreatePostDialog by remember { mutableStateOf(false) }
-    val query by homeViewModel.searchQuery.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        homeViewModel.fetchPosts()
+        viewModel.fetchPosts()
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Home") })
+            TopAppBar(title = { Text("Feed") })
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { showCreatePostDialog = true }) {
@@ -81,22 +82,14 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            OutlinedTextField(
-                value = query,
-                onValueChange = homeViewModel::onQueryChange,
-                label = { Text("Search") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            )
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
                 when {
-                    posts.isEmpty() && query.isBlank() -> CircularProgressIndicator()
+                    isLoading -> CircularProgressIndicator()
 
-                    posts.isEmpty() -> Text("No results")
+                    posts.isEmpty() -> Text("No posts yet")
 
                     else -> LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -109,7 +102,7 @@ fun HomeScreen(
                                 onClick = { onPostClick(post.id) },
                                 onAuthorClick = { onAuthorClick(post.author.id) },
                                 currentUserId = currentUserId,
-                                viewModel = homeViewModel,
+                                interactions = viewModel.interactions,
                             )
                         }
                     }
@@ -120,7 +113,7 @@ fun HomeScreen(
             CreatePostDialog(
                 onDismiss = { showCreatePostDialog = false },
                 onConfirm = { content ->
-                    homeViewModel.createPost(content)
+                    viewModel.createPost(content)
                     showCreatePostDialog = false
                 },
             )
@@ -134,7 +127,7 @@ fun PostItem(
     onClick: () -> Unit,
     onAuthorClick: () -> Unit,
     currentUserId: String?,
-    viewModel: HomeViewModel,
+    interactions: PostInteractionHandler,
 ) {
     val isLiked = currentUserId != null && post.likedByUsers.contains(currentUserId)
     val isDisliked = currentUserId != null && post.dislikedByUsers.contains(currentUserId)
@@ -153,31 +146,31 @@ fun PostItem(
             Text(text = post.body)
             Row {
                 if (isLiked) {
-                    IconButton(onClick = { viewModel.removeLike(post.id) }) {
+                    IconButton(onClick = { interactions.removeLike(post.id) }) {
                         Icon(Icons.Filled.ThumbUp, contentDescription = "Like", tint = Color.Green)
                     }
                 } else {
-                    IconButton(onClick = { viewModel.addLike(post.id) }) {
+                    IconButton(onClick = { interactions.addLike(post.id) }) {
                         Icon(Icons.Outlined.ThumbUp, contentDescription = "Like")
                     }
                 }
 
                 if (isDisliked) {
-                    IconButton(onClick = { viewModel.removeDislike(post.id) }) {
+                    IconButton(onClick = { interactions.removeDislike(post.id) }) {
                         Icon(Icons.Filled.ThumbDown, contentDescription = "Dislike", tint = Color.Red)
                     }
                 } else {
-                    IconButton(onClick = { viewModel.addDislike(post.id) }) {
+                    IconButton(onClick = { interactions.addDislike(post.id) }) {
                         Icon(Icons.Outlined.ThumbDown, contentDescription = "Dislike")
                     }
                 }
 
                 if (isSaved) {
-                    IconButton(onClick = { viewModel.unFavoritePost(post.id) }) {
+                    IconButton(onClick = { interactions.unFavoritePost(post.id) }) {
                         Icon(Icons.Filled.Bookmark, contentDescription = "Save", tint = Color.Blue)
                     }
                 } else {
-                    IconButton(onClick = { viewModel.favoritePost(post.id) }) {
+                    IconButton(onClick = { interactions.favoritePost(post.id) }) {
                         Icon(Icons.Outlined.Bookmark, contentDescription = "Save")
                     }
                 }

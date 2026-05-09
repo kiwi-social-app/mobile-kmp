@@ -11,12 +11,14 @@ struct HomeView: View {
     }
 
     var body: some View {
-        Observing(viewModel.posts) { posts in
+        Observing(viewModel.posts, viewModel.isLoading) { posts, isLoading in
             NavigationStack {
                 Group {
-                    if posts.isEmpty {
+                    if(isLoading.boolValue){
                         ProgressView("Loading posts...")
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else if posts.isEmpty {
+                        Text("No posts yet").frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
                         List(posts, id: \.id) { post in
                             NavigationLink(

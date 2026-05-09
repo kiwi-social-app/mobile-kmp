@@ -36,6 +36,7 @@ import com.kiwisocial.app.viewModel.ChatDetailViewModel
 import com.kiwisocial.app.viewModel.ChatListViewModel
 import com.kiwisocial.app.viewModel.LoginViewModel
 import com.kiwisocial.app.viewModel.PostDetailViewModel
+import com.kiwisocial.app.viewModel.SearchViewModel
 import com.kiwisocial.app.viewModel.SignupViewModel
 
 @Composable
@@ -111,7 +112,19 @@ fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource)
                 )
             }
             composable("search") {
-                SearchScreen()
+                val searchViewModel: SearchViewModel = viewModel {
+                    SearchViewModel()
+                }
+                SearchScreen(
+                    viewModel = searchViewModel,
+                    onPostClick = { postId ->
+                        navController.navigate("post_details/$postId")
+                    },
+                    onAuthorClick = { authorId ->
+                        navController.navigate("profile?userId=$authorId")
+                    },
+                    currentUserId = currentUserId ?: return@composable,
+                )
             }
             composable("saved_posts") {
                 SavedPostsScreen(
