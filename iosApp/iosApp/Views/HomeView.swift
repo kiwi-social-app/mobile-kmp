@@ -1,9 +1,14 @@
 import SwiftUI
 import shared
+import FirebaseAuth
 
 struct HomeView: View {
     private let viewModel = HomeViewModel()
     @State private var showCreatePostDialog = false
+    
+    private var currentUserId: String? {
+        Auth.auth().currentUser?.uid
+    }
 
     var body: some View {
         Observing(viewModel.posts) { posts in
@@ -17,7 +22,11 @@ struct HomeView: View {
                             NavigationLink(
                                 destination: PostDetailView(postId: post.id)
                             ) {
-                                PostItemView(post: post)
+                                PostItemView(
+                                    post: post,
+                                    currentUserId: currentUserId,
+                                    interactor: viewModel
+                                )
                                     .listRowSeparator(.hidden)
                                     .listRowInsets(
                                         EdgeInsets(
@@ -36,7 +45,7 @@ struct HomeView: View {
                         }
                     }
                 }
-                .navigationTitle("Posts")
+                .navigationTitle("Feed")
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         Button(action: { showCreatePostDialog = true }) {
