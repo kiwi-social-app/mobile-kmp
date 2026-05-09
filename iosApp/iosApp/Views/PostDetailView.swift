@@ -53,8 +53,15 @@ struct PostDetailView: View {
 
     private func postCard(_ post: Post) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(post.author.username ?? "Unknown")
-                .font(.headline)
+            NavigationLink {
+                ProfileView(userId: post.author.id)
+            } label: {
+                Text(post.author.username ?? "Unknown")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.accentColor)
+            }
+            .buttonStyle(.plain)
+
             Text(post.body)
                 .font(.body)
             Text(post.createdAt)

@@ -37,7 +37,7 @@ struct MainTabView: View {
             }
 
             NavigationStack {
-                ProfileView(authRepository: authRepository)
+                ProfileView(onSignOut: onSignOut)
             }
             .tabItem {
                 Label("Account", systemImage: "person.crop.circle")

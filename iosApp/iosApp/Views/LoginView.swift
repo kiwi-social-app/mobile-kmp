@@ -21,9 +21,10 @@ struct LoginView: View {
                     text: Binding(
                         get: { email },
                         set: { viewModel.onEmailChange(newEmail: $0) }
-                    )
+                    ),
                 )
                 .textFieldStyle(.roundedBorder)
+                .autocapitalization(.none)
 
                 SecureField(
                     "Password",
