@@ -3,7 +3,7 @@ import SwiftUI
 import shared
 
 struct SavedPostsView: View {
-    private let viewModel = SavedPostsViewModel()
+    @State private var viewModel = SavedPostsViewModel()
 
     private var currentUserId: String? {
         Auth.auth().currentUser?.uid

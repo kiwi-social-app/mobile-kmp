@@ -5,6 +5,12 @@ import com.kiwisocial.app.model.OutgoingMessage
 import com.kiwisocial.app.wsUrl
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.plugins.websocket.WebSockets
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,10 +24,18 @@ import org.hildan.krossbow.stomp.conversions.kxserialization.withTextConversions
 import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 
 class WsChatDataSource {
+    private val httpClient = HttpClient {
+        install(WebSockets)
+        install(Logging) {
+            logger = Logger.SIMPLE
+            level = LogLevel.ALL
+        }
+    }
+
     enum class ConnectionState { DISCONNECTED, CONNECTING, CONNECTED }
 
     private val json = Json { ignoreUnknownKeys = true }
-    private val client = StompClient(KtorWebSocketClient())
+    private val client = StompClient(KtorWebSocketClient(httpClient))
 
     private var session: StompSessionWithKxSerialization? = null
 
@@ -50,12 +64,24 @@ class WsChatDataSource {
 
     suspend fun subscribeToChat(chatId: String): Flow<Message> {
         val s = session ?: error("Call connect() before subscribing")
-        return s.subscribe("/topic/chats/$chatId", Message.serializer())
+        try {
+            return s.subscribe("/topic/chats/$chatId", Message.serializer())
+        } catch (e: Exception) {
+            session = null
+            _connectionState.value = ConnectionState.DISCONNECTED
+            throw e
+        }
     }
 
     suspend fun sendMessage(message: OutgoingMessage) {
         val s = session ?: error("Call connect() before sending")
-        s.convertAndSend("/app/sendMessage", message, OutgoingMessage.serializer())
+        try {
+            s.convertAndSend("/app/sendMessage", message, OutgoingMessage.serializer())
+        } catch (e: Exception) {
+            session = null
+            _connectionState.value = ConnectionState.DISCONNECTED
+            throw e
+        }
     }
 
     suspend fun disconnect() {

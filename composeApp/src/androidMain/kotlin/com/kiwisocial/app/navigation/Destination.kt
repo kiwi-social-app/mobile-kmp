@@ -10,8 +10,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class Destination(val route: String, val label: String, val icon: ImageVector, val contentDescription: String) {
     HOME("home", "Home", Icons.Default.Home, "Home"),
+    SAVED_POSTS("saved_posts", "Saved", Icons.Default.Bookmark, "SavedPosts"),
     CHAT("chat", "Chat", Icons.Default.ChatBubble, "Chat"),
     SEARCH("search", "Search", Icons.Default.Search, "Search"),
-    SAVED_POSTS("saved_posts", "Saved", Icons.Default.Bookmark, "SavedPosts"),
     PROFILE("profile", "Profile", Icons.Default.Person, "Profile"),
 }

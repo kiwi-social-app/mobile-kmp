@@ -42,13 +42,18 @@ class ChatDetailViewModel(private val chatId: String, private val wsChatDataSour
 
     fun sendMessage(content: String) {
         val userId = Firebase.auth.currentUser?.uid ?: return
+        val msg = OutgoingMessage(chatId, SenderRef(userId), content)
+
         viewModelScope.launch {
             try {
-                wsChatDataSource.sendMessage(
-                    OutgoingMessage(chatId, SenderRef(userId), content),
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
+                wsChatDataSource.sendMessage(msg)
+            } catch (_: Exception) {
+                try {
+                    wsChatDataSource.connect()
+                    wsChatDataSource.sendMessage(msg)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

@@ -3,29 +3,37 @@ import shared
 
 struct ContentView: View {
     @State private var isLoggedIn: Bool = false
-    @State private var authViewModel = AuthViewModel()
+    @State private var viewModel = AuthViewModel()
 
     let authRepository: AuthRepository
     let wsChatDataSource: WsChatDataSource
     
     var body: some View {
-        if isLoggedIn {
-                        MainTabView(
-                            authRepository: authRepository,
-                            wsChatDataSource: wsChatDataSource,
-                            onSignOut: { authViewModel.signOut() }
-                        )
-                        .transition(.opacity)
-                    } else {
-                        LoginView(
-                            authRepository: authRepository,
-                            onLoginSuccess: {
-                            withAnimation {
-                                isLoggedIn = true
-                            }
-                        })
-                        .transition(.move(edge: .bottom))
+        Observing(viewModel.currentUser){ user in
+            if user != nil {
+                MainTabView(
+                    authRepository: authRepository,
+                    wsChatDataSource: wsChatDataSource,
+                    onSignOut: {
+                        Task { try? await wsChatDataSource.disconnect() }
+                        viewModel.signOut()
+                        withAnimation {
+                            isLoggedIn = false
+                        }
                     }
+                )
+                .transition(.opacity)
+            } else {
+                LoginView(
+                    authRepository: authRepository,
+                    onLoginSuccess: {
+                    withAnimation {
+                        isLoggedIn = true
+                    }
+                })
+                .transition(.move(edge: .bottom))
+            }
+        }
     }
 }
 

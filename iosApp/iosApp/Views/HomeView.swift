@@ -3,7 +3,7 @@ import shared
 import FirebaseAuth
 
 struct HomeView: View {
-    private let viewModel = HomeViewModel()
+    @State private var viewModel = HomeViewModel()
     @State private var showCreatePostDialog = false
     
     private var currentUserId: String? {

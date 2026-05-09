@@ -16,12 +16,12 @@ struct MainTabView: View {
             }
 
             NavigationStack {
-                SearchView()
+                SavedPostsView()
             }
             .tabItem {
-                Label("Search", systemImage: "magnifyingglass")
+                Label("Saved Posts", systemImage: "bookmark")
             }
-
+            
             NavigationStack {
                 ChatListView(wsChatDataSource: wsChatDataSource)
             }
@@ -30,10 +30,10 @@ struct MainTabView: View {
             }
 
             NavigationStack {
-                SavedPostsView()
+                SearchView()
             }
             .tabItem {
-                Label("Saved Posts", systemImage: "bookmark")
+                Label("Search", systemImage: "magnifyingglass")
             }
 
             NavigationStack {
@@ -41,6 +41,13 @@ struct MainTabView: View {
             }
             .tabItem {
                 Label("Account", systemImage: "person.crop.circle")
+            }
+        }
+        .task {
+            do {
+                try await wsChatDataSource.connect()
+            } catch {
+                print("WS connect failed: \(error)")
             }
         }
     }

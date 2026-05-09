@@ -3,12 +3,12 @@ import shared
 
 struct ProfileView: View {
     let onSignOut: () -> Void
-    private let viewModel: ProfileViewModel
+    @State private var viewModel: ProfileViewModel
     @State private var showSignOutDialog = false
 
     init(userId: String? = nil, onSignOut: @escaping () -> Void = {}) {
         self.viewModel = ProfileViewModel(userId: userId)
-        self.onSignOut = {}
+        self.onSignOut = onSignOut
     }
 
     var body: some View {

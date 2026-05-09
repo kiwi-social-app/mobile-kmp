@@ -2,7 +2,7 @@ import SwiftUI
 import shared
 
 struct PostDetailView: View {
-    private let viewModel: PostDetailViewModel
+    @State private var viewModel: PostDetailViewModel
     @State private var commentDraft: String = ""
 
     init(

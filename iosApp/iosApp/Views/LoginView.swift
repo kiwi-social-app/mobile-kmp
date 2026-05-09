@@ -3,7 +3,7 @@ import shared
 
 struct LoginView: View {
     var onLoginSuccess: () -> Void
-    private let viewModel: LoginViewModel
+    @State private var viewModel: LoginViewModel
 
     init(authRepository: AuthRepository, onLoginSuccess: @escaping () -> Void) {
         self.onLoginSuccess = onLoginSuccess
