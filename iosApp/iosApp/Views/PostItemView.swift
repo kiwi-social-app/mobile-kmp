@@ -4,7 +4,7 @@ import shared
 struct PostItemView: View {
     let post: Post
     let currentUserId: String?
-    let interactor: any PostInteractor
+    let interactor: PostInteractionHandler
 
     private var isLiked: Bool {
         currentUserId.map { post.likedByUsers.contains($0) } ?? false

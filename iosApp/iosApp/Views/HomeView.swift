@@ -25,7 +25,7 @@ struct HomeView: View {
                                 PostItemView(
                                     post: post,
                                     currentUserId: currentUserId,
-                                    interactor: viewModel
+                                    interactor: viewModel.interactions
                                 )
                                     .listRowSeparator(.hidden)
                                     .listRowInsets(
