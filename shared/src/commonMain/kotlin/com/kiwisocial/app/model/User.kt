@@ -17,6 +17,3 @@ data class User(
 
 @Serializable
 data class UserUpdate(val username: String?, val email: String, val firstname: String?, val lastname: String?)
-
-@Serializable
-data class GoogleAuthUser(val uid: String, val email: String)
