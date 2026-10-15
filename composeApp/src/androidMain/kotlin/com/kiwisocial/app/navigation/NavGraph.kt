@@ -49,18 +49,19 @@ fun NavGraph(authRepository: AuthRepository, wsChatDataSource: WsChatDataSource)
     val currentUser by authViewModel.currentUser.collectAsStateWithLifecycle()
     val currentUserId = currentUser?.uid
 
-    LaunchedEffect(currentUser, currentRoute) {
+    LaunchedEffect(currentUser) {
         if (currentUser == null) {
             wsChatDataSource.disconnect()
-            if (currentRoute != null && currentRoute != "login" && currentRoute != "signup") {
-                navController.navigate("login") {
-                    popUpTo(navController.graph.id) { inclusive = true }
-                }
-            }
         } else {
-            try {
-                wsChatDataSource.connect()
-            } catch (_: Exception) {}
+            try { wsChatDataSource.connect() } catch (_: Exception) {}
+        }
+    }
+
+    LaunchedEffect(currentUser, currentRoute) {
+        if (currentUser == null && currentRoute != null && currentRoute != "login" && currentRoute != "signup") {
+            navController.navigate("login") {
+                popUpTo(navController.graph.id) { inclusive = true }
+            }
         }
     }
 
