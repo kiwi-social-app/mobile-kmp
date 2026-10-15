@@ -1,32 +1,32 @@
 [versions]
-agp = "8.13.2"
+agp = "9.1.1"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
 androidx-activityCompose = "1.13.0"
-androidx-lifecycle = "2.10.0"
+androidx-lifecycle = "2.11.0"
 androidx-material-icons = "1.7.8"
 credentials = "1.6.0"
-firebase-bom = "34.12.0"
-compose-multiplatform = "1.10.3"
+firebase-bom = "35.0.1"
+compose-multiplatform = "1.12.2"
 
-firebase-kmp = "2.4.0"
+firebase-kmp = "2.7.0"
 
-google-services = "4.4.4"
-googleid = "1.2.0"
+google-services = "4.5.0"
+googleid = "1.2.1"
 kotlinxSerializationProtobuf = "1.11.0"
-krossbowWebsocketBuiltin = "9.3.0"
-skie = "0.10.11"
+krossbowWebsocketBuiltin = "10.0.0"
+skie = "0.10.15"
 ktlint = "14.2.0"
 
-kotlin = "2.3.20"
-kotlinSerialization = "2.3.20"
-kotlinxDatetime = "0.7.1"
+kotlin = "2.4.20"
+kotlinSerialization = "2.4.20"
+kotlinxDatetime = "0.8.0"
 kotlinxSerializationJson = "1.11.0"
 
-ktor = "3.4.3"
+ktor = "3.6.0"
 material3 = "1.4.0"
-navigationComposeAndroid = "2.9.8"
+navigationComposeAndroid = "2.10.2"
 
 [libraries]
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
