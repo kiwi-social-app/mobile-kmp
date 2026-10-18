@@ -7,6 +7,7 @@ import dev.gitlive.firebase.initialize
 class AndroidApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        ApiConfig.baseUrl = BuildConfig.BASE_URL
         Firebase.initialize(this)
     }
 }

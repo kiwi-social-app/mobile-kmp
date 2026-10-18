@@ -7,5 +7,3 @@ class IOSPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
-
-actual val baseUrl: String = "http://localhost:18080"

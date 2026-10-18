@@ -1,3 +1,6 @@
 TEAM_ID=
 BUNDLE_ID=com.kiwisocial.app
 APP_NAME=KiwiSocial
+API_BASE_URL=http:/$()/localhost:18080
+
+#include? "Config.local.xcconfig"

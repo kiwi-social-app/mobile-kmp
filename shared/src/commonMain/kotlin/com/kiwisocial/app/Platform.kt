@@ -6,6 +6,10 @@ interface Platform {
 
 expect fun getPlatform(): Platform
 
-expect val baseUrl: String
+object ApiConfig {
+    lateinit var baseUrl: String
+}
 
-val wsUrl = baseUrl.replace("http://", "ws://").replace("https://", "wss://") + "/api/ws"
+val baseUrl: String get() = ApiConfig.baseUrl
+
+val wsUrl: String get() = baseUrl.replace("http://", "ws://").replace("https://", "wss://") + "/api/ws"

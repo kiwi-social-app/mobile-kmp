@@ -79,6 +79,20 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    buildFeatures {
+        buildConfig = true
+    }
+    flavorDimensions += "backend"
+    productFlavors {
+        create("local") {
+            dimension = "backend"
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:18080\"")
+        }
+        create("prod") {
+            dimension = "backend"
+            buildConfigField("String", "BASE_URL", "\"https://kiwi-backend-448989396094.europe-west1.run.app\"")
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

@@ -11,6 +11,7 @@ struct iOSApp: App {
 
     init() {
             FirebaseApp.configure()
+        ApiConfig.shared.baseUrl = Bundle.main.object(forInfoDictionaryKey: "KiwiApiBaseUrl") as! String
         self.googleSignInProvider = GoogleSignInProvider()
         self.userDataSource = UserDataSource()
         self.authRepository = AuthRepository(

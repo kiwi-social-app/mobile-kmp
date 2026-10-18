@@ -7,5 +7,3 @@ class AndroidPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
-
-actual val baseUrl: String = "http://10.0.2.2:18080"
